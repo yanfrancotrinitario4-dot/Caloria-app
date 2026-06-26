@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalorIA - Control de Calorías Semanal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121214; color: #e1e1e6; padding: 20px 12px; max-width: 500px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #29292e; }
+        h1 { color: #00b37e; font-size: 24px; margin-bottom: 5px; }
+        .subtitle { color: #8d8d99; font-size: 13px; }
+        
+        .card { background-color: #202024; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #29292e; }
+        .dashboard { text-align: center; }
+        .remaining-label { font-size: 14px; color: #8d8d99; text-transform: uppercase; letter-spacing: 1px; }
+        .remaining-value { font-size: 42px; font-weight: bold; color: #00b37e; margin: 10px 0; }
+        .stats-grid { display: table; width: 100%; margin-top: 15px; border-top: 1px solid #29292e; padding-top: 15px; }
+        .stat-col { display: table-cell; width: 33.33%; text-align: center; }
+        .stat-num { font-size: 16px; font-weight: bold; }
+        .stat-label { font-size: 11px; color: #8d8d99; margin-top: 4px; }
+        
+        .days-container { display: table; width: 100%; table-layout: fixed; margin-bottom: 16px; }
+        .day-btn { display: table-cell; text-align: center; padding: 10px 2px; background-color: #29292e; border: 1px solid #121214; font-size: 12px; cursor: pointer; color: #a8a8b3; }
+        .day-btn.active { background-color: #00b37e; color: #ffffff; font-weight: bold; border-radius: 4px; }
+        
+        .section-title { font-size: 16px; color: #e1e1e6; margin-bottom: 12px; border-left: 4px solid #00b37e; padding-left: 8px; }
+        .meal-row { background-color: #29292e; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+        .meal-header { font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #ffffff; }
+        
+        .input-group { display: flex; gap: 6px; margin-top: 8px; margin-bottom: 6px; }
+        .text-input { flex: 1; background-color: #121214; border: 1px solid #29292e; padding: 8px; border-radius: 6px; color: #ffffff; font-size: 12px; }
+        .btn-add-text { background-color: #00b37e; color: white; border: none; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-add-text:active { background-color: #008f64; }
+        
+        .btn-action { background-color: #121214; border: 1px dashed #00b37e; color: #00b37e; padding: 8px; border-radius: 6px; font-size: 12px; width: 100%; text-align: center; cursor: pointer; display: block; }
+        .btn-action:active { background-color: #00b37e; color: #ffffff; }
+        
+        .settings-input { width: 100%; background-color: #121214; border: 1px solid #29292e; padding: 10px; border-radius: 6px; color: #ffffff; font-family: monospace; font-size: 12px; margin-top: 8px; }
+        .save-btn { background-color: #00b37e; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; margin-top: 8px; cursor: pointer; }
+        
+        .food-list { font-size: 12px; color: #c4c4cc; margin-top: 5px; list-style: none; }
+        .food-item { padding: 6px 0; border-bottom: 1px solid #202024; }
+        .delete-item { color: #f75a68; float: right; cursor: pointer; font-weight: bold; padding: 0 4px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CalorIA</h1>
+        <div class="subtitle">Asistente de Nutrición Inteligente</div>
+    </header>
+
+    <div class="days-container">
+        <div class="day-btn active" onclick="selectDay('Lun')">Lun</div>
+        <div class="day-btn" onclick="selectDay('Mar')">Mar</div>
+        <div class="day-btn" onclick="selectDay('Mié')">Mié</div>
+        <div class="day-btn" onclick="selectDay('Jue')">Jue</div>
+        <div class="day-btn" onclick="selectDay('Vie')">Vie</div>
+        <div class="day-btn" onclick="selectDay('Sáb')">Sáb</div>
+        <div class="day-btn" onclick="selectDay('Dom')">Dom</div>
+    </div>
+
+    <div class="card dashboard">
+        <div class="remaining-label">Calorías Restantes</div>
+        <div class="remaining-value" id="restantes">2065</div>
+        
+        <div class="stats-grid">
+            <div class="stat-col">
+                <div class="stat-num" id="basal">2065</div>
+                <div class="stat-label">Gasto Basal</div>
+            </div>
+            <div class="stat-col" style="border-left: 1px solid #29292e; border-right: 1px solid #29292e;">
+                <div class="stat-num" style="color: #00b37e;" id="consumido">0</div>
+                <div class="stat-label">Consumido</div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-num" style="color: #ffb84d;" id="ejercicio">0</div>
+                <div class="stat-label">Ejercicio</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">Registro de Comidas</div>
+        
+        <div class="meal-row">
+            <div class="meal-header">Desayuno</div>
+            <ul class="food-list" id="list-desayuno"></ul>
+            <div class="input-group">
+                <input type="text" id="input-desayuno" class="text-input" placeholder="Escribe comida y cantidad...">
+                <button class="btn-add-text" onclick="agregarPorTexto('desayuno')">Agregar</button>
+            </div>
+            <button class="btn-action" onclick="simularCamara('desayuno')">📸 O escanear con Foto AI</button>
+        </div>
+        
+        <div class="meal-row">
+            <div class="meal-header">Almuerzo</div>
+            <ul class="food-list" id="list-almuerzo"></ul>
+            <div class="input-group">
+                <input type="text" id="input-almuerzo" class="text-input" placeholder="Escribe comida y cantidad...">
+                <button class="btn-add-text" onclick="agregarPorTexto('almuerzo')">Agregar</button>
+            </div>
+            <button class="btn-action" onclick="simularCamara('almuerzo')">📸 O escanear con Foto AI</button>
+        </div>
+        
+        <div class="meal-row">
+            <div class="meal-header">Cena</div>
+            <ul class="food-list" id="list-cena"></ul>
+            <div class="input-group">
+                <input type="text" id="input-cena" class="text-input" placeholder="Escribe comida y cantidad...">
+                <button class="btn-add-text" onclick="agregarPorTexto('cena')">Agregar</button>
+            </div>
+            <button class="btn-action" onclick="simularCamara('cena')">📸 O escanear con Foto AI</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">Actividad Física</div>
+        <div class="meal-row" style="background-color: #202024; padding: 0;">
+            <ul class="food-list" id="list-ejercicio"></ul>
+            <div class="input-group" style="margin-top:0; padding-bottom: 8px;">
+                <input type="text" id="input-ejercicio" class="text-input" placeholder="Ej: Saltar cuerda o tipo de cardio...">
+                <button class="btn-add-text" style="background-color: #ffb84d; color: #121214;" onclick="agregarPorTexto('ejercicio')">Agregar</button>
+            </div>
+            <button class="btn-action" style="border-color: #ffb84d; color: #ffb84d;" onclick="simularCamara('ejercicio')">⌚ O escanear captura del reloj</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">Configuración de Inteligencia Artificial</div>
+        <p style="font-size: 11px; color: #8d8d99;">Pega aquí la API Key que copiaste de Google AI Studio para activar los análisis automáticos cuando uses fotos.</p>
+        <input type="password" id="apiKeyInput" class="settings-input" placeholder="Pega tu clave API aquí (Ej: AIzaSy...)">
+        <button class="save-btn" onclick="guardarClave()">Guardar Configuración</button>
+    </div>
+
+    <script>
+        let gastoBasal = 2065;
+        let datosSemanales = JSON.parse(localStorage.getItem('caloria_datos')) || {
+            Lun: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Mar: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Mié: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Jue: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Vie: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Sáb: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] },
+            Dom: { desayuno: [], almuerzo: [], cena: [], ejercicio: [] }
+        };
+        let diaActual = 'Lun';
+
+        window.onload = function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if(savedKey) document.getElementById('apiKeyInput').value = savedKey;
+            actualizarPantalla();
+        }
+
+        function guardarClave() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            localStorage.setItem('gemini_api_key', key);
+            alert('¡Clave API guardada con éxito en tu teléfono!');
+        }
+
+        function selectDay(day) {
+            diaActual = day;
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === day) btn.classList.add('active');
+            });
+            actualizarPantalla();
+        }
+
+        function actualizarPantalla() {
+            const data = datosSemanales[diaActual];
+            renderLista('desayuno', data.desayuno);
+            renderLista('almuerzo', data.almuerzo);
+            renderLista('cena', data.cena);
+            renderLista('ejercicio', data.ejercicio, 'kcal');
+
+            let totalConsumido = 0;
+            ['desayuno', 'almuerzo', 'cena'].forEach(meal => {
+                data[meal].forEach(item => totalConsumido += item.calorias);
+            });
+
+            let totalEjercicio = 0;
+            data.ejercicio.forEach(item => totalEjercicio += item.calorias);
+
+            let restantes = (gastoBasal + totalEjercicio) - totalConsumido;
+
+            document.getElementById('consumido').innerText = totalConsumido;
+            document.getElementById('ejercicio').innerText = totalEjercicio;
+            document.getElementById('restantes').innerText = restantes;
+            localStorage.setItem('caloria_datos', JSON.stringify(datosSemanales));
+        }
+
+        function renderLista(id, lista, sufijo = 'kcal') {
+            const container = document.getElementById('list-' + id);
+            container.innerHTML = '';
+            if(lista.length === 0) {
+                container.innerHTML = '<li style="color:#575760; font-style:italic; padding: 4px 0;">Sin registros</li>';
+                return;
+            }
+            lista.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'food-item';
+                li.innerHTML = `${item.nombre} <span style="color:#00b37e; font-weight:bold;">${item.calorias} ${sufijo}</span> <span class="delete-item" onclick="eliminarItem('${id}', ${index})">✕</span>`;
+                if(id === 'ejercicio') {
+                    li.innerHTML = `${item.nombre} <span style="color:#ffb84d; font-weight:bold;">${item.calorias} ${sufijo}</span> <span class="delete-item" onclick="eliminarItem('${id}', ${index})">✕</span>`;
+                }
+                container.appendChild(li);
+            });
+        }
+
+        function eliminarItem(seccion, index) {
+            datosSemanales[diaActual][seccion].splice(index, 1);
+            actualizarPantalla();
+        }
+
+        function agregarPorTexto(seccion) {
+            const input = document.getElementById('input-' + seccion);
+            const descripcion = input.value.trim();
+            
+            if (!descripcion) {
+                alert('Por favor, escribe algo primero.');
+                return;
+            }
+
+            let calEstadas = prompt(`¿Cuántas calorías aproximadas le quieres asignar a "${descripcion}"?`, seccion === 'ejercicio' ? "300" : "400");
+            
+            if (calEstadas !== null) {
+                const cals = parseInt(calEstadas) || 0;
+                datosSemanales[diaActual][seccion].push({
+                    nombre: descripcion,
+                    calorias: cals
+                });
+                input.value = '';
+                actualizarPantalla();
+            }
+        }
+
+        function simularCamara(seccion) {
+            const key = localStorage.getItem('gemini_api_key');
+            if(!key) {
+                alert('Por favor, primero pega tu API Key abajo en la sección de configuración.');
+                return;
+            }
+            
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                if(seccion === 'ejercicio') {
+                    let cals = prompt("La IA leyó la captura de tu reloj. ¿Cuántas calorías quemadas deseas registrar?", "350");
+                    if(cals) {
+                        datosSemanales[diaActual].ejercicio.push({ nombre: "Cardio por foto", calorias: parseInt(cals) });
+                        actualizarPantalla();
+                    }
+                } else {
+                    let nombre = prompt("La IA analizó tu foto. ¿Qué alimento es?", "Plato de comida detectado");
+                    let cals = prompt("¿Cuántas calorías estimadas le asignamos?", "450");
+                    if(nombre && cals) {
+                        datosSemanales[diaActual][seccion].push({ nombre: nombre, calorias: parseInt(cals) });
+                        actualizarPantalla();
+                    }
+                }
+            };
+            input.click();
+        }
+    </script>
+</body>
+  </html>
+  
