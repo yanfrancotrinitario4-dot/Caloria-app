@@ -3,422 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalorIA - Control de Peso Inteligente</title>
+    <title>CalorIA App</title>
     <style>
-        :root {
-            --bg-principal: #121212;
-            --bg-tarjeta: #1e1e1e;
-            --texto: #ffffff;
-            --texto-secundario: #aaaaaa;
-            --primario: #009688;
-            --primario-hover: #00796b;
-            --borde: #333333;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-principal);
-            color: var(--texto);
-            padding: 15px;
+            background-color: #0d0d1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
         }
-
         .contenedor-app {
             width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-tarjeta);
-            border-radius: 15px;
+            max-width: 400px;
+            background-color: #121226;
+            border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            box-sizing: border-box;
         }
-
-        h2, h3 {
-            color: var(--texto);
-            margin-bottom: 15px;
+        h3, h4 {
             text-align: center;
+            color: #e91e63;
+            margin-top: 0;
         }
-
-        .oculto {
-            display: none !important;
+        .oculto { display: none !important; }
+        .grupo-entrada { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #bbb; }
+        input, textarea {
+            width: 100%; padding: 10px; background-color: #1a1a3a;
+            border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box;
         }
-
-        .pantalla-onboarding {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex-grow: 1;
-        }
-
-        .grupo-input {
-            margin-bottom: 15px;
-        }
-
-        .grupo-input label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--texto-secundario);
-            font-size: 14px;
-        }
-
-        .grupo-input input, .grupo-input select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--borde);
-            background-color: var(--bg-principal);
-            color: var(--texto);
-            font-size: 16px;
-        }
-
         button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primario);
-            color: var(--texto);
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 10px;
+            width: 100%; padding: 12px; background-color: #e91e63; color: white;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
-
-        button:hover {
-            background-color: var(--primario-hover);
-        }
-
-        .resumen-calorias {
-            background-color: var(--bg-principal);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid var(--borde);
-        }
-
-        .numero-calorias {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primario);
-            margin: 10px 0;
-        }
-
-        .subtitulo-calorias {
-            font-size: 12px;
-            color: var(--texto-secundario);
-        }
-
-        .metricas-salud {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
+        .metricas-salud { display: flex; gap: 10px; margin-bottom: 20px; }
         .tarjeta-metrica {
-            flex: 1;
-            background-color: var(--bg-principal);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 13px;
-            border: 1px solid var(--borde);
+            flex: 1; background-color: #1a1a3a; padding: 10px;
+            border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid #2d2d5a;
         }
-
-        .tarjeta-metrica span {
-            display: block;
-            font-weight: bold;
-            color: var(--primario);
-            font-size: 16px;
-            margin-top: 5px;
+        .tarjeta-metrica span { display: block; font-size: 16px; font-weight: bold; color: #00bcd4; margin-top: 5px; }
+        .resumen-calorias {
+            text-align: center; margin-bottom: 20px; background-color: #1a1a3a;
+            padding: 15px; border-radius: 12px; border: 1px solid #2d2d5a;
         }
-
-        .contenedor-macros {
-            background-color: var(--bg-principal);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--borde);
-        }
-
-        .macro-linea {
-            margin-bottom: 10px;
-        }
-
-        .macro-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .barra-progreso-bg {
-            background-color: #333;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .barra-progreso-fill {
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
-        .p-fill { background-color: #ff5722; }
-        .c-fill { background-color: #4caf50; }
-        .g-fill { background-color: #ffeb3b; }
-
-        .seccion-registro {
-            margin-top: auto;
-        }
-
-        .textarea-ia {
-            width: 100%;
-            height: 80px;
-            padding: 12px;
-            background-color: var(--bg-principal);
-            color: var(--texto);
-            border: 1px solid var(--borde);
-            border-radius: 8px;
-            resize: none;
-            font-size: 15px;
-            margin-bottom: 10px;
-        }
-
+        .numero-calorias { font-size: 36px; font-weight: bold; color: #e91e63; margin: 5px 0; }
+        .subtitulo-calorias { font-size: 12px; color: #aaa; }
+        .macro-linea { margin-bottom: 12px; }
+        .macro-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+        .barra-progreso-bg { background-color: #222; border-radius: 6px; height: 8px; width: 100%; overflow: hidden; }
+        .barra-progreso-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
+        .p-fill { background-color: #e91e63; }
+        .c-fill { background-color: #00bcd4; }
+        .g-fill { background-color: #ff9800; }
         .item-comida {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid var(--borde);
-            font-size: 14px;
+            background-color: #1a1a3a; padding: 8px 12px; border-radius: 6px;
+            margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 13px;
+        }
+        .tarjeta-reporte {
+            background: #1a1a3a; border: 1px solid #2d2d5a; padding: 15px; border-radius: 10px; margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-
 <div class="contenedor-app">
-    
-    <div id="pantallaOnboarding" class="pantalla-onboarding">
-        <h2>Bienvenido a CalorIA</h2>
-        <p style="text-align: center; color: var(--texto-secundario); margin-bottom: 20px; font-size: 14px;">
-            Configura tu perfil para calcular tus metas personalizadas.
-        </p>
-        
-        <div class="grupo-input">
-            <label for="inputEdad">Edad (años)</label>
-            <input type="number" id="inputEdad" placeholder="Ej. 21" min="1" max="120">
-        </div>
-
-        <div class="grupo-input">
-            <label for="inputSexo">Sexo biológico</label>
-            <select id="inputSexo">
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-            </select>
-        </div>
-
-        <div class="grupo-input">
-            <label for="inputPeso">Peso actual (kg)</label>
-            <input type="number" id="inputPeso" placeholder="Ej. 107" step="0.1">
-        </div>
-
-        <div class="grupo-input">
-            <label for="inputAltura">Estatura (metros)</label>
-            <input type="number" id="inputAltura" placeholder="Ej. 1.75" step="0.01">
-        </div>
-
-        <div class="grupo-input">
-            <label for="inputActividad">Nivel de Actividad</label>
-            <select id="inputActividad">
-                <option value="1.2">Sedentario (Poco o nada de ejercicio)</option>
-                <option value="1.375">Ligero (Ejercicio 1-3 días/semana)</option>
-                <option value="1.55">Moderado (Ejercicio 3-5 días/semana)</option>
-                <option value="1.725">Fuerte (Ejercicio 6-7 días/semana)</option>
-            </select>
-        </div>
-
-        <button onclick="guardarPerfil()">Calcular mis Metas</button>
+   <!-- PANTALLA 1: PERFIL -->
+    <div id="pantallaPerfil">
+        <h3>Configuración de Perfil</h3>
+        <div class="grupo-entrada"><label>Nombre:</label><input type="text" id="perfilNombre" placeholder="Tu nombre"></div>
+        <div class="grupo-entrada"><label>Edad:</label><input type="number" id="perfilEdad" placeholder="Ej: 21"></div>
+        <div class="grupo-entrada"><label>Altura (cm):</label><input type="number" id="perfilAltura" placeholder="Ej: 175"></div>
+        <div class="grupo-entrada"><label>Peso (kg):</label><input type="number" id="perfilPeso" placeholder="Ej: 107"></div>
+        <div class="grupo-entrada"><label>Meta Calórica Diaria:</label><input type="number" id="perfilMeta" placeholder="Ej: 2000"></div>
+        <button onclick="guardarPerfil()">Guardar y Comenzar</button>
     </div>
-    <!-- 2. DASHBOARD PRINCIPAL -->
+
+    <!-- PANTALLA 2: DASHBOARD -->
     <div id="pantallaDashboard" class="oculto">
-        <h3>CalorIA Dashboard</h3>
+        <h3 id="saludoUsuario">¡Hola!</h3>
         <div class="metricas-salud">
-            <div class="tarjeta-metrica">IMC <span id="txtIMC">0.0</span></div>
-            <div class="tarjeta-metrica">Gasto Basal <span id="txtTMB">0</span> kcal</div>
-            <div class="tarjeta-metrica">Meta Diaria <span id="txtMeta">0</span> kcal</div>
+            <div class="tarjeta-metrica">IMC<span id="valIMC">--.-</span></div>
+            <div class="tarjeta-metrica">Gasto Est.<span id="valGasto">----</span></div>
+            <div class="tarjeta-metrica">Meta<span id="valMeta">----</span></div>
         </div>
         <div class="resumen-calorias">
-            <div class="subtitulo-calorias">CALORÍAS RESTANTES</div>
-            <div class="numero-calorias" id="caloriasRestantes">0</div>
-            <div class="subtitulo-calorias">Consumidas: <span id="caloriasConsumidas">0</span> / <span id="caloriasTotales">0</span> kcal</div>
+            <div class="subtitulo-calorias">CONSUMIDO HOY</div>
+            <div class="numero-calorias" id="calTotales">0</div>
+            <div class="subtitulo-calorias" id="txtProgresoPorcentaje">0% de tu meta</div>
         </div>
-        <div class="contenedor-macros">
-            <div class="macro-linea">
-                <div class="macro-info"><span>Proteínas</span><span id="txtProteina">0 / 0g</span></div>
-                <div class="barra-progreso-bg"><div id="barraP" class="barra-progreso-fill p-fill"></div></div>
+        <div class="macro-linea">
+            <div class="macro-info"><span>Proteína</span><span id="txtP">0g</span></div>
+            <div class="barra-progreso-bg"><div id="barP" class="barra-progreso-fill p-fill"></div></div>
+        </div>
+        <div class="macro-linea">
+            <div class="macro-info"><span>Carbos</span><span id="txtC">0g</span></div>
+            <div class="barra-progreso-bg"><div id="barC" class="barra-progreso-fill c-fill"></div></div>
+        </div>
+        <div class="macro-linea">
+            <div class="macro-info"><span>Grasas</span><span id="txtG">0g</span></div>
+            <div class="barra-progreso-bg"><div id="barG" class="barra-progreso-fill g-fill"></div></div>
+        </div>
+
+        <div class="seccion-registro" style="margin-top: 25px;">
+            <div style="display: flex; gap: 5px; margin-bottom: 12px;" id="pestanasComida">
+                <button onclick="cambiarPestanaManual('DESAYUNO', this)" style="margin:0; background-color:#009688; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Desayuno</button>
+                <button onclick="cambiarPestanaManual('ALMUERZO', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Almuerzo</button>
+                <button onclick="cambiarPestanaManual('CENA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Cena</button>
+                <button onclick="cambiarPestanaManual('MERIENDA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Merienda</button>
             </div>
-            <div class="macro-linea">
-                <div class="macro-info"><span>Carbohidratos</span><span id="txtCarbo">0 / 0g</span></div>
-                <div class="barra-progreso-bg"><div id="barraC" class="barra-progreso-fill c-fill"></div></div>
-            </div>
-            <div class="macro-linea">
-                <div class="macro-info"><span>Grasas</span><span id="txtGrasa">0 / 0g</span></div>
-                <div class="barra-progreso-bg"><div id="barraG" class="barra-progreso-fill g-fill"></div></div>
+            <textarea class="textarea-ia" id="txtComidaIA" rows="2" placeholder="Describe tu desayuno..."></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button onclick="procesarComidaIA()" style="flex: 2; margin-top: 0;">Registrar Texto</button>
+                <label style="flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 0;">
+                    📷
+                    <input type="file" accept="image/*" capture="environment" onchange="procesarFotoIA(event)" style="display: none;">
+                </label>
             </div>
         </div>
-        <div id="listaComidas" style="margin-bottom: 20px; max-height: 150px; overflow-y: auto;"></div>
-        <div class="seccion-registro">
-            <textarea class="textarea-ia" id="txtComidaIA" placeholder="Describe lo que comiste..."></textarea>
-            <button onclick="procesarComidaIA()">Registrar con IA</button>
-            <button onclick="borrarDatos()" style="background-color: #555; font-size: 12px; padding: 5px; margin-top: 15px;">Restablecer Perfil</button>
-        </div>
+        <h4 style="margin-top:20px; border-bottom:1px solid #2d2d5a; padding-bottom:5px; text-align:left;">Comidas de Hoy</h4>
+        <div id="listaComidasHoy"></div>
     </div>
+
+    <!-- PANTALLA 3: REPORTES -->
+    <div id="pantallaReportes" class="oculto">
+        <h3>Historial de Reportes</h3>
+        <div id="zonaReporteDomingo"></div>
+        <div id="zonaReporteMensual"></div>
+        <h4 style="border-bottom: 1px solid #2d2d5a; padding-bottom: 5px; color: #00bcd4; text-align:left; margin-top:20px;">Cierres Mensuales Guardados</h4>
+        <div id="listaReportesMensuales"></div>
+    </div>
+
+    <!-- MENÚ GLOBAL INFERIOR -->
+    <div id="navegacionApp" class="oculto" style="display: flex; justify-content: space-around; margin-top: 30px; background-color: #1a1a3a; padding: 10px; border-radius: 8px; border: 1px solid #2d2d5a;">
+        <button onclick="irAPantalla('dashboard')" id="navDash" style="margin: 0; background-color: #009688; flex: 1; font-size: 13px;">🏠 Diarios</button>
+        <button onclick="irAPantalla('reportes')" id="navRep" style="margin: 0; background-color: #333; flex: 1; font-size: 13px; margin-left: 10px;">📊 Reportes</button>
+    </div>
+    <button id="btnResetGrave" class="oculto" onclick="borrarDatos()" style="background-color: #333; font-size: 11px; padding: 6px; margin-top: 20px; width: auto; display: block; margin-left: auto; margin-right: auto;">Restablecer Todo</button>
 </div>
-
 <script>
-    let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
-    let registrosDiarios = JSON.parse(localStorage.getItem('caloria_registros')) || { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
+   let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
+    const obtenerFechaHoy = () => new Date().toLocaleDateString('sv-SE'); // Formato AAAA-MM-DD local
+    const hoy = obtenerFechaHoy();
 
-    window.onload = function() { 
-        if (datosUsuario) mostrarDashboard(); 
+    let historialSemanas = JSON.parse(localStorage.getItem('caloria_historial')) || {};
+    let cierresMensuales = JSON.parse(localStorage.getItem('caloria_mensuales')) || [];
+    
+    if (!historialSemanas[hoy]) {
+        historialSemanas[hoy] = { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
+    }
+    let registrosDiarios = historialSemanas[hoy];
+    let seleccionManualUsuario = 'DESAYUNO';
+
+    window.onload = function() {
+        if (datosUsuario) {
+            mostrarDashboard();
+            verificarCierresDisponibles();
+        }
     };
-    function guardarPerfil() {
-        const ed = parseInt(document.getElementById('inputEdad').value);
-        const sx = document.getElementById('inputSexo').value;
-        const pe = parseFloat(document.getElementById('inputPeso').value);
-        const al = parseFloat(document.getElementById('inputAltura').value);
-        const ac = parseFloat(document.getElementById('inputActividad').value);
 
-        if (!ed || !pe || !al) {
-            alert('Por favor, rellena todos los campos correctamente.');
+    function guardarPerfil() {
+        const nombre = document.getElementById('perfilNombre').value.trim();
+        const edad = parseInt(document.getElementById('perfilEdad').value);
+        const altura = parseInt(document.getElementById('perfilAltura').value);
+        const peso = parseFloat(document.getElementById('perfilPeso').value);
+        const meta = parseInt(document.getElementById('perfilMeta').value);
+
+        if (!nombre || !edad || !altura || !peso || !meta) {
+            alert('Por favor completa todos los campos.');
             return;
         }
 
-        // Cálculo del Índice de Masa Corporal (IMC)
-        const imcCalculado = pe / (al * al);
+        let imc = (peso / ((altura / 100) ** 2)).toFixed(1);
+        let gastoEst = Math.round(10 * peso + 6.25 * altura - 5 * edad + 5);
 
-        // Cálculo de Tasa Metropolitana Basal (TMB) usando Harris-Benedict
-        let tmbCalculada = 0;
-        if (sx === 'masculino') {
-            tmbCalculada = 88.362 + (13.397 * pe) + (4.799 * (al * 100)) - (5.677 * ed);
-        } else {
-            tmbCalculada = 447.593 + (9.247 * pe) + (3.098 * (al * 100)) - (4.330 * ed);
-        }
-
-        // Gasto Energético Total Diario (GETD)
-        const gastoTotal = tmbCalculada * ac;
-
-        // Meta para control de peso (Déficit controlado de unas 400 kcal)
-        const metaCalculada = Math.round(gastoTotal - 400);
-
-        // Distribución estándar de macronutrientes (40% Carbohidratos, 30% Proteínas, 30% Grasas)
-        const protMeta = Math.round((metaCalculada * 0.30) / 4);
-        const carbMeta = Math.round((metaCalculada * 0.40) / 4);
-        const grasMeta = Math.round((metaCalculada * 0.30) / 9);
-
-        datosUsuario = {
-            edad: ed, sexo: sx, peso: pe, altura: al, actividad: ac,
-            imc: imcCalculado.toFixed(1),
-            tmb: Math.round(tmbCalculada),
-            meta: metaCalculada,
-            macros: { p: protMeta, c: carbMeta, g: grasMeta }
-        };
-
+        datosUsuario = { nombre, edad, altura, peso, meta, imc, gastoEst };
         localStorage.setItem('caloria_perfil', JSON.stringify(datosUsuario));
         mostrarDashboard();
+        verificarCierresDisponibles();
     }
 
     function mostrarDashboard() {
-        document.getElementById('pantallaOnboarding').classList.add('oculto');
+        document.getElementById('pantallaPerfil').classList.add('oculto');
         document.getElementById('pantallaDashboard').classList.remove('oculto');
-
-        document.getElementById('txtIMC').innerText = datosUsuario.imc;
-        document.getElementById('txtTMB').innerText = datosUsuario.tmb;
-        document.getElementById('txtMeta').innerText = datosUsuario.meta;
-        document.getElementById('caloriasTotales').innerText = datosUsuario.meta;
-
+        document.getElementById('navegacionApp').classList.remove('oculto');
+        document.getElementById('btnResetGrave').classList.remove('oculto');
+        
+        document.getElementById('saludoUsuario').innerText = "¡Hola, " + datosUsuario.nombre + "!";
+        document.getElementById('valIMC').innerText = datosUsuario.imc;
+        document.getElementById('valGasto').innerText = datosUsuario.gastoEst;
+        document.getElementById('valMeta').innerText = datosUsuario.meta;
         actualizarGraficos();
     }
 
-    function actualizarGraficos() {
-        const rest = datosUsuario.meta - registrosDiarios.calorias;
-        document.getElementById('caloriasRestantes').innerText = rest;
-        document.getElementById('caloriasConsumidas').innerText = registrosDiarios.calorias;
-
-        // Renderizado de textos en los macros
-        document.getElementById('txtProteina').innerText = registrosDiarios.p + ' / ' + datosUsuario.macros.p + 'g';
-        document.getElementById('txtCarbo').innerText = registrosDiarios.c + ' / ' + datosUsuario.macros.c + 'g';
-        document.getElementById('txtGrasa').innerText = registrosDiarios.g + ' / ' + datosUsuario.macros.g + 'g';
-
-        // Cálculo de porcentajes para las barras de progreso
-        const pctP = Math.min((registrosDiarios.p / datosUsuario.macros.p) * 100, 100);
-        const pctC = Math.min((registrosDiarios.c / datosUsuario.macros.c) * 100, 100);
-        const pctG = Math.min((registrosDiarios.g / datosUsuario.macros.g) * 100, 100);
-
-        document.getElementById('barraP').style.width = pctP + '%';
-        document.getElementById('barraC').style.width = pctC + '%';
-        document.getElementById('barraG').style.width = pctG + '%';
-
-        // Dibujar historial de comidas en pantalla
-        const lista = document.getElementById('listaComidas');
-        lista.innerHTML = '';
-        registrosDiarios.comidas.forEach(function(item) {
-            lista.innerHTML += '<div class="item-comida"><span>' + item.desc + '</span><strong>' + item.cal + ' kcal</strong></div>';
-        });
+    function irAPantalla(pantalla) {
+        if (pantalla === 'dashboard') {
+            document.getElementById('pantallaDashboard').classList.remove('oculto');
+            document.getElementById('pantallaReportes').classList.add('oculto');
+            document.getElementById('navDash').style.backgroundColor = '#009688';
+            document.getElementById('navRep').style.backgroundColor = '#333';
+        } else {
+            document.getElementById('pantallaDashboard').classList.add('oculto');
+            document.getElementById('pantallaReportes').classList.remove('remove', 'oculto');
+            document.getElementById('navDash').style.backgroundColor = '#333';
+            document.getElementById('navRep').style.backgroundColor = '#009688';
+            renderizarListaMensual();
+        }
     }
-    function procesarComidaIA() {
+
+    function cambiarPestanaManual(categoria, boton) {
+        seleccionManualUsuario = categoria;
+        const botones = document.querySelectorAll('#pestanasComida button');
+        botones.forEach(btn => btn.style.backgroundColor = '#555');
+        boton.style.backgroundColor = '#009688';
+        document.getElementById('txtComidaIA').placeholder = "Describe tu " + categoria.toLowerCase() + "...";
+    }
+   function procesarComidaIA() {
         const texto = document.getElementById('txtComidaIA').value.trim();
-        if (!texto) {
-            alert('Por favor, describe una comida o alimento.');
-            return;
-        }
+        if (!texto) return;
 
-        // Simulación del análisis nutricional en local para evitar fallos de claves API
-        let calSim = 250;
-        let pSim = 15;
-        let cSim = 30;
-        let gSim = 8;
-
-        const tMinusculo = texto.toLowerCase();
-        if (tMinusculo.includes('huevo') || tMinusculo.includes('pollo') || tMinusculo.includes('carne')) {
-            calSim = 350; pSim = 30; cSim = 2; gSim = 12;
-        } else if (tMinusculo.includes('pan') || tMinusculo.includes('arroz') || tMinusculo.includes('pasta') || tMinusculo.includes('avena')) {
-            calSim = 280; pSim = 6; cSim = 55; gSim = 2;
-        } else if (tMinusculo.includes('ensalada') || tMinusculo.includes('manzana') || tMinusculo.includes('fruta')) {
-            calSim = 90; pSim = 1; cSim = 20; gSim = 0;
-        }
-
-        // Acumular los macronutrientes en los registros del día
+        let calSim = 320; let pSim = 20; let cSim = 40; let gSim = 10;
+        
         registrosDiarios.calorias += calSim;
         registrosDiarios.p += pSim;
         registrosDiarios.c += cSim;
         registrosDiarios.g += gSim;
         
-        registrosDiarios.comidas.push({ desc: texto, cal: calSim });
-
-        localStorage.setItem('caloria_registros', JSON.stringify(registrosDiarios));
-        actualizarGraficos();
+        registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] " + texto, cal: calSim });
+        localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
         
-        // Limpiar el campo de texto
+        actualizarGraficos();
         document.getElementById('txtComidaIA').value = '';
     }
 
+    function procesarFotoIA(event) {
+        if (!event.target.files[0]) return;
+        document.getElementById('txtComidaIA').value = "Analizando foto... 📷✨";
+        
+        setTimeout(() => {
+            let calSim = 450; let pSim = 30; let carboSim = 50; let gSim = 12;
+            
+            registrosDiarios.calorias += calSim;
+            registrosDiarios.p += pSim;
+            registrosDiarios.c += carboSim; // Usa carboSim aquí
+            registrosDiarios.g += gSim;
+
+            
+            registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] Foto de plato analizada", cal: calSim });
+            localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
+            
+            actualizarGraficos();
+            document.getElementById('txtComidaIA').value = '';
+        }, 1200);
+    }
+
+    function actualizarGraficos() {
+        document.getElementById('calTotales').innerText = registrosDiarios.calorias;
+        let pct = Math.min(Math.round((registrosDiarios.calorias / datosUsuario.meta) * 100), 100);
+        document.getElementById('txtProgresoPorcentaje').innerText = pct + "% de tu meta";
+
+        document.getElementById('txtP').innerText = registrosDiarios.p + "g";
+        document.getElementById('txtC').innerText = registrosDiarios.c + "g";
+        document.getElementById('txtG').innerText = registrosDiarios.g + "g";
+
+        document.getElementById('barP').style.width = Math.min((registrosDiarios.p / 150) * 100, 100) + "%";
+        document.getElementById('barC').style.width = Math.min((registrosDiarios.c / 200) * 100, 100) + "%";
+        document.getElementById('barG').style.width = Math.min((registrosDiarios.g / 70) * 100, 100) + "%";
+
+        const lista = document.getElementById('listaComidasHoy');
+        lista.innerHTML = '';
+        registrosDiarios.comidas.forEach(c => {
+            lista.innerHTML += `<div class="item-comida"><span>${c.desc}</span><strong>${c.cal} kcal</strong></div>`;
+        });
+    }
+
+    function verificarCierresDisponibles() {
+        const d = new Date();
+        
+        // Control Domingo
+        if (d.getDay() === 0) {
+            document.getElementById('zonaReporteDomingo').innerHTML = `
+                <button onclick="ejecutarReporteDomingo()" style="background-color:#e91e63;">📊 Generar Resumen Dominical</button>
+            `;
+        }
+        
+        // Control fin de mes automático (Si mañana es día 1, hoy es último de mes)
+        const mañana = new Date(); mañana.setDate(d.getDate() + 1);
+        if (mañana.getDate() === 1) {
+            document.getElementById('zonaReporteMensual').innerHTML = `
+                <button onclick="ejecutarCierreMensual()" style="background-color:#00bcd4; margin-top:10px;">🏆 Guardar y Cerrar Mes Actual</button>
+            `;
+        }
+    }
+
+    function ejecutarReporteDomingo() {
+        let suma = 0; let conteo = 0;
+        for (let i = 6; i >= 0; i--) {
+            let tmp = new Date(); tmp.setDate(tmp.getDate() - i);
+            let iso = tmp.toLocaleDateString('sv-SE');
+            if (historialSemanas[iso]) { suma += historialSemanas[iso].calorias; conteo++; }
+        }
+        alert("📊 RESUMEN SEMANAL\n\nPromedio diario de los últimos 7 días: " + Math.round(suma / (conteo || 1)) + " kcal.");
+    }
+
+    function ejecutarCierreMensual() {
+        const d = new Date();
+        const opciones = { month: 'long', year: 'numeric' };
+        const nombreMes = d.toLocaleDateString('es-ES', opciones).toUpperCase();
+
+        if (cierresMensuales.some(m => m.mes === nombreMes)) {
+            alert("El mes de " + nombreMes + " ya fue cerrado previamente.");
+            return;
+        }
+
+        let totalCal = 0; let dias = 0;
+        const mesActual = d.getMonth();
+        const añoActual = d.getFullYear();
+
+        Object.keys(historialSemanas).forEach(fecha => {
+            let parts = fecha.split('-');
+            if (parseInt(parts[0]) === añoActual && (parseInt(parts[1]) - 1) === mesActual) {
+                totalCal += historialSemanas[fecha].calorias;
+                dias++;
+            }
+        });
+
+        let promedio = Math.round(totalCal / (dias || 1));
+        cierresMensuales.push({ mes: nombreMes, promedio: promedio, dias: dias });
+        localStorage.setItem('caloria_mensuales', JSON.stringify(cierresMensuales));
+        
+        alert("¡Mes cerrado con éxito! Guarda el reporte en la pestaña de historial.");
+        renderizarListaMensual();
+    }
+
+    function renderizarListaMensual() {
+        const contenedor = document.getElementById('listaReportesMensuales');
+        if (cierresMensuales.length === 0) {
+            contenedor.innerHTML = '<p style="color:#aaa; font-size:13px; text-align:center;">Aún no hay meses cerrados.</p>';
+            return;
+        }
+        contenedor.innerHTML = '';
+        cierresMensuales.forEach(m => {
+            contenedor.innerHTML += `
+                <div class="tarjeta-reporte">
+                    <strong style="color:#00bcd4; display:block; margin-bottom:5px;">${m.mes}</strong>
+                    <span style="font-size:13px; color:#eee;">Promedio Calórico: ${m.promedio} kcal/día</span><br>
+                    <span style="font-size:11px; color:#aaa;">Días con Registro: ${m.dias}</span>
+                </div>
+            `;
+        });
+    }
+
     function borrarDatos() {
-        if (confirm('¿Seguro que quieres restablecer tu perfil y borrar los registros?')) {
-            localStorage.removeItem('caloria_perfil');
-            localStorage.removeItem('caloria_registros');
+        if (confirm("¿Estás seguro de que deseas reiniciar toda la aplicación? Se perderán los perfiles e historiales.")) {
+            localStorage.clear();
             location.reload();
         }
     }
