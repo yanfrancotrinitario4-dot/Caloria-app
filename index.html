@@ -13,75 +13,27 @@
             --primario: #e91e63;
             --borde: #2d2d5a;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-principal);
-            color: var(--texto);
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .contenedor-app {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--bg-tarjeta);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-
-        h3, h4 {
-            text-align: center;
-            color: var(--primario);
-            margin-top: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-principal); color: var(--texto); padding: 20px; display: flex; justify-content: center; }
+        .contenedor-app { width: 100%; max-width: 400px; background-color: var(--bg-tarjeta); border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        h3, h4 { text-align: center; color: var(--primario); margin-top: 0; }
         .oculto { display: none !important; }
         .grupo-entrada { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-size: 14px; color: var(--texto-secundario); }
-        input, textarea, select {
-            width: 100%; padding: 10px; background-color: #1a1a3a;
-            border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box;
-        }
-        button {
-            width: 100%; padding: 12px; background-color: var(--primario); color: white;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
+        input, textarea, select { width: 100%; padding: 10px; background-color: #1a1a3a; border: 1px solid #333; border-radius: 8px; color: white; }
+        button { width: 100%; padding: 12px; background-color: var(--primario); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .metricas-salud { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tarjeta-metrica {
-            flex: 1; background-color: #1a1a3a; padding: 10px;
-            border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid var(--borde);
-        }
+        .tarjeta-metrica { flex: 1; background-color: #1a1a3a; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid var(--borde); }
         .tarjeta-metrica span { display: block; font-size: 16px; font-weight: bold; color: #00bcd4; margin-top: 5px; }
-        .resumen-calorias {
-            text-align: center; margin-bottom: 20px; background-color: #1a1a3a;
-            padding: 15px; border-radius: 12px; border: 1px solid var(--borde);
-        }
+        .resumen-calorias { text-align: center; margin-bottom: 20px; background-color: #1a1a3a; padding: 15px; border-radius: 12px; border: 1px solid var(--borde); }
         .numero-calorias { font-size: 36px; font-weight: bold; color: var(--primario); margin: 5px 0; }
         .subtitulo-calorias { font-size: 12px; color: var(--texto-secundario); }
         .macro-linea { margin-bottom: 12px; }
         .macro-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
         .barra-progreso-bg { background-color: #222; border-radius: 6px; height: 8px; width: 100%; overflow: hidden; }
         .barra-progreso-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
-        .p-fill { background-color: var(--primario); }
-        .c-fill { background-color: #00bcd4; }
-        .g-fill { background-color: #ff9800; }
-        .item-comida {
-            background-color: #1a1a3a; padding: 8px 12px; border-radius: 6px;
-            margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 13px;
-        }
-        .tarjeta-reporte {
-            background: #1a1a3a; border: 1px solid var(--borde); padding: 15px; border-radius: 10px; margin-bottom: 15px;
-        }
+        .p-fill { background-color: var(--primario); } .c-fill { background-color: #00bcd4; } .g-fill { background-color: #ff9800; }
+        .item-comida { background-color: #1a1a3a; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -130,102 +82,52 @@
             <div class="macro-info"><span>Grasas</span><span id="txtG">0g</span></div>
             <div class="barra-progreso-bg"><div id="barG" class="barra-progreso-fill g-fill"></div></div>
         </div>
-
         <div class="seccion-registro" style="margin-top: 25px;">
-            <div style="display: flex; gap: 5px; margin-bottom: 12px;" id="pestanasComida">
-                <button onclick="cambiarPestanaManual('DESAYUNO', this)" style="margin:0; background-color:#009688; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Desayuno</button>
-                <button onclick="cambiarPestanaManual('ALMUERZO', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Almuerzo</button>
-                <button onclick="cambiarPestanaManual('CENA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Cena</button>
-                <button onclick="cambiarPestanaManual('MERIENDA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Merienda</button>
-            </div>
-            <textarea class="textarea-ia" id="txtComidaIA" rows="2" placeholder="Describe tu desayuno..."></textarea>
+            <textarea id="txtComidaIA" rows="2" placeholder="Describe tu comida..."></textarea>
             <div style="display: flex; gap: 10px; margin-top: 8px;">
                 <button onclick="procesarComidaIA()" style="flex: 2; margin-top: 0;">Registrar Texto</button>
                 <label style="flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 0;">
                     📷
-                    <input type="file" accept="image/*" capture="environment" onchange="procesarFotoIA(event)" style="display: none;">
+                    <!-- AQUÍ SE ELIMINÓ capture="environment" PARA HABILITAR GALERÍA -->
+                    <input type="file" accept="image/*" onchange="procesarFotoIA(event)" style="display: none;">
                 </label>
             </div>
         </div>
-        <h4 style="margin-top:20px; border-bottom:1px solid #2d2d5a; padding-bottom:5px; text-align:left;">Comidas de Hoy</h4>
-        <div id="listaComidasHoy"></div>
+        <div id="listaComidasHoy" style="margin-top:20px;"></div>
     </div>
 
-    <!-- PANTALLA 3: REPORTES -->
-    <div id="pantallaReportes" class="oculto">
-        <h3>Historial de Reportes</h3>
-        <div id="zonaReporteDomingo"></div>
-        <div id="zonaReporteMensual"></div>
-        <h4 style="border-bottom: 1px solid #2d2d5a; padding-bottom: 5px; color: #00bcd4; text-align:left; margin-top:20px;">Cierres Mensuales Guardados</h4>
-        <div id="listaReportesMensuales"></div>
-    </div>
-
-    <!-- MENÚ GLOBAL INFERIOR -->
-    <div id="navegacionApp" class="oculto" style="display: flex; justify-content: space-around; margin-top: 30px; background-color: #1a1a3a; padding: 10px; border-radius: 8px; border: 1px solid #2d2d5a;">
-        <button onclick="irAPantalla('dashboard')" id="navDash" style="margin: 0; background-color: #009688; flex: 1; font-size: 13px;">🏠 Diarios</button>
-        <button onclick="irAPantalla('reportes')" id="navRep" style="margin: 0; background-color: #333; flex: 1; font-size: 13px; margin-left: 10px;">📊 Reportes</button>
-    </div>
-    <button id="btnResetGrave" class="oculto" onclick="borrarDatos()" style="background-color: #333; font-size: 11px; padding: 6px; margin-top: 20px; width: auto; display: block; margin-left: auto; margin-right: auto;">Restablecer Todo</button>
+    <button onclick="borrarDatos()" style="background-color: #333; font-size: 11px; padding: 6px; margin-top: 20px; width: auto; display: block; margin-left: auto; margin-right: auto;">Restablecer Todo</button>
 </div>
 
 <script>
     let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
-    let historialSemanas = JSON.parse(localStorage.getItem('caloria_historial')) || {};
-    let cierresMensuales = JSON.parse(localStorage.getItem('caloria_mensuales')) || [];
-    const hoy = new Date().toLocaleDateString('sv-SE');
-    if (!historialSemanas[hoy]) historialSemanas[hoy] = { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
-    let registrosDiarios = historialSemanas[hoy];
-    let seleccionManualUsuario = 'DESAYUNO';
-
-    window.onload = () => { if (datosUsuario) { mostrarDashboard(); verificarCierresDisponibles(); } };
+    let registrosDiarios = JSON.parse(localStorage.getItem('caloria_registros')) || { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
+    
+    window.onload = () => { if (datosUsuario) mostrarDashboard(); };
 
     function guardarPerfil() {
-        const nombre = document.getElementById('perfilNombre').value.trim();
         const edad = parseInt(document.getElementById('perfilEdad').value);
         const altura = parseInt(document.getElementById('perfilAltura').value);
         const peso = parseFloat(document.getElementById('perfilPeso').value);
         const factor = parseFloat(document.getElementById('perfilActividad').value);
 
-        if (!nombre || !edad || !altura || !peso) { alert('Completa todos los campos'); return; }
-
         let tmb = Math.round((10 * peso) + (6.25 * altura) - (5 * edad) + 5);
         let meta = Math.round(tmb * factor);
         let imc = (peso / ((altura / 100) ** 2)).toFixed(1);
 
-        datosUsuario = { nombre, edad, altura, peso, meta, imc, gastoEst: tmb };
+        datosUsuario = { nombre: document.getElementById('perfilNombre').value, edad, altura, peso, meta, imc, gastoEst: tmb };
         localStorage.setItem('caloria_perfil', JSON.stringify(datosUsuario));
         mostrarDashboard();
-        verificarCierresDisponibles();
     }
 
     function mostrarDashboard() {
         document.getElementById('pantallaPerfil').classList.add('oculto');
         document.getElementById('pantallaDashboard').classList.remove('oculto');
-        document.getElementById('navegacionApp').classList.remove('oculto');
-        document.getElementById('btnResetGrave').classList.remove('oculto');
         document.getElementById('saludoUsuario').innerText = "¡Hola, " + datosUsuario.nombre + "!";
         document.getElementById('valIMC').innerText = datosUsuario.imc;
         document.getElementById('valGasto').innerText = datosUsuario.gastoEst;
         document.getElementById('valMeta').innerText = datosUsuario.meta;
         actualizarGraficos();
-    }
-
-    function irAPantalla(pantalla) {
-        if (pantalla === 'dashboard') {
-            document.getElementById('pantallaDashboard').classList.remove('oculto');
-            document.getElementById('pantallaReportes').classList.add('oculto');
-        } else {
-            document.getElementById('pantallaDashboard').classList.add('oculto');
-            document.getElementById('pantallaReportes').classList.remove('oculto');
-            renderizarListaMensual();
-        }
-    }
-
-    function cambiarPestanaManual(categoria, boton) {
-        seleccionManualUsuario = categoria;
-        document.querySelectorAll('#pestanasComida button').forEach(b => b.style.backgroundColor = '#555');
-        boton.style.backgroundColor = '#009688';
-        document.getElementById('txtComidaIA').placeholder = "Describe tu " + categoria.toLowerCase() + "...";
     }
 
     function actualizarGraficos() {
@@ -245,9 +147,8 @@
 
     function procesarComidaIA() {
         registrosDiarios.calorias += 300;
-        registrosDiarios.p += 20; registrosDiarios.c += 30; registrosDiarios.g += 10;
-        registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] " + document.getElementById('txtComidaIA').value, cal: 300 });
-        localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
+        registrosDiarios.comidas.push({ desc: document.getElementById('txtComidaIA').value, cal: 300 });
+        localStorage.setItem('caloria_registros', JSON.stringify(registrosDiarios));
         actualizarGraficos();
         document.getElementById('txtComidaIA').value = '';
     }
@@ -255,14 +156,12 @@
     function procesarFotoIA(e) {
         if (!e.target.files[0]) return;
         registrosDiarios.calorias += 450;
-        registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] Foto analizada", cal: 450 });
-        localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
+        registrosDiarios.comidas.push({ desc: "Foto analizada", cal: 450 });
+        localStorage.setItem('caloria_registros', JSON.stringify(registrosDiarios));
         actualizarGraficos();
     }
 
-    function verificarCierresDisponibles() { /* Mantener tu lógica de cierres */ }
-    function renderizarListaMensual() { /* Mantener tu lógica de reportes */ }
-    function borrarDatos() { if(confirm("¿Reiniciar todo?")) { localStorage.clear(); location.reload(); } }
+    function borrarDatos() { if (confirm("¿Reiniciar todo?")) { localStorage.clear(); location.reload(); } }
 </script>
 </body>
 </html>
