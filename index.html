@@ -254,20 +254,16 @@
     <!-- 2. DASHBOARD PRINCIPAL -->
     <div id="pantallaDashboard" class="oculto">
         <h3>CalorIA Dashboard</h3>
-        
         <div class="metricas-salud">
             <div class="tarjeta-metrica">IMC <span id="txtIMC">0.0</span></div>
             <div class="tarjeta-metrica">Gasto Basal <span id="txtTMB">0</span> kcal</div>
             <div class="tarjeta-metrica">Meta Diaria <span id="txtMeta">0</span> kcal</div>
         </div>
-
         <div class="resumen-calorias">
             <div class="subtitulo-calorias">CALORÍAS RESTANTES</div>
             <div class="numero-calorias" id="caloriasRestantes">0</div>
             <div class="subtitulo-calorias">Consumidas: <span id="caloriasConsumidas">0</span> / <span id="caloriasTotales">0</span> kcal</div>
         </div>
-
-        <!-- Barras de Macronutrientes -->
         <div class="contenedor-macros">
             <div class="macro-linea">
                 <div class="macro-info"><span>Proteínas</span><span id="txtProteina">0 / 0g</span></div>
@@ -282,13 +278,9 @@
                 <div class="barra-progreso-bg"><div id="barraG" class="barra-progreso-fill g-fill"></div></div>
             </div>
         </div>
-
-        <!-- Listado de Comidas -->
         <div id="listaComidas" style="margin-bottom: 20px; max-height: 150px; overflow-y: auto;"></div>
-
-        <!-- 3. INTERFAZ DE REGISTRO CON IA -->
         <div class="seccion-registro">
-            <textarea class="textarea-ia" id="txtComidaIA" placeholder="Describe lo que comiste (Ej: Un tazón de avena con un plátano)..."></textarea>
+            <textarea class="textarea-ia" id="txtComidaIA" placeholder="Describe lo que comiste..."></textarea>
             <button onclick="procesarComidaIA()">Registrar con IA</button>
             <button onclick="borrarDatos()" style="background-color: #555; font-size: 12px; padding: 5px; margin-top: 15px;">Restablecer Perfil</button>
         </div>
@@ -299,14 +291,137 @@
     let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
     let registrosDiarios = JSON.parse(localStorage.getItem('caloria_registros')) || { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
 
-    window.onload = function() {
-        if (datosUsuario) {
-            mostrarDashboard();
-        }
+    window.onload = function() { 
+        if (datosUsuario) mostrarDashboard(); 
     };
-
     function guardarPerfil() {
-        const edad = parseInt(document.getElementById('inputEdad').value);
-        const sexo = document.getElementById('inputSexo').value;
-        const peso = parseFloat(document.getElementById('inputPeso').value);
-        const altura =Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+        const ed = parseInt(document.getElementById('inputEdad').value);
+        const sx = document.getElementById('inputSexo').value;
+        const pe = parseFloat(document.getElementById('inputPeso').value);
+        const al = parseFloat(document.getElementById('inputAltura').value);
+        const ac = parseFloat(document.getElementById('inputActividad').value);
+
+        if (!ed || !pe || !al) {
+            alert('Por favor, rellena todos los campos correctamente.');
+            return;
+        }
+
+        // Cálculo del Índice de Masa Corporal (IMC)
+        const imcCalculado = pe / (al * al);
+
+        // Cálculo de Tasa Metropolitana Basal (TMB) usando Harris-Benedict
+        let tmbCalculada = 0;
+        if (sx === 'masculino') {
+            tmbCalculada = 88.362 + (13.397 * pe) + (4.799 * (al * 100)) - (5.677 * ed);
+        } else {
+            tmbCalculada = 447.593 + (9.247 * pe) + (3.098 * (al * 100)) - (4.330 * ed);
+        }
+
+        // Gasto Energético Total Diario (GETD)
+        const gastoTotal = tmbCalculada * ac;
+
+        // Meta para control de peso (Déficit controlado de unas 400 kcal)
+        const metaCalculada = Math.round(gastoTotal - 400);
+
+        // Distribución estándar de macronutrientes (40% Carbohidratos, 30% Proteínas, 30% Grasas)
+        const protMeta = Math.round((metaCalculada * 0.30) / 4);
+        const carbMeta = Math.round((metaCalculada * 0.40) / 4);
+        const grasMeta = Math.round((metaCalculada * 0.30) / 9);
+
+        datosUsuario = {
+            edad: ed, sexo: sx, peso: pe, altura: al, actividad: ac,
+            imc: imcCalculado.toFixed(1),
+            tmb: Math.round(tmbCalculada),
+            meta: metaCalculada,
+            macros: { p: protMeta, c: carbMeta, g: grasMeta }
+        };
+
+        localStorage.setItem('caloria_perfil', JSON.stringify(datosUsuario));
+        mostrarDashboard();
+    }
+
+    function mostrarDashboard() {
+        document.getElementById('pantallaOnboarding').classList.add('oculto');
+        document.getElementById('pantallaDashboard').classList.remove('oculto');
+
+        document.getElementById('txtIMC').innerText = datosUsuario.imc;
+        document.getElementById('txtTMB').innerText = datosUsuario.tmb;
+        document.getElementById('txtMeta').innerText = datosUsuario.meta;
+        document.getElementById('caloriasTotales').innerText = datosUsuario.meta;
+
+        actualizarGraficos();
+    }
+
+    function actualizarGraficos() {
+        const rest = datosUsuario.meta - registrosDiarios.calorias;
+        document.getElementById('caloriasRestantes').innerText = rest;
+        document.getElementById('caloriasConsumidas').innerText = registrosDiarios.calorias;
+
+        // Renderizado de textos en los macros
+        document.getElementById('txtProteina').innerText = registrosDiarios.p + ' / ' + datosUsuario.macros.p + 'g';
+        document.getElementById('txtCarbo').innerText = registrosDiarios.c + ' / ' + datosUsuario.macros.c + 'g';
+        document.getElementById('txtGrasa').innerText = registrosDiarios.g + ' / ' + datosUsuario.macros.g + 'g';
+
+        // Cálculo de porcentajes para las barras de progreso
+        const pctP = Math.min((registrosDiarios.p / datosUsuario.macros.p) * 100, 100);
+        const pctC = Math.min((registrosDiarios.c / datosUsuario.macros.c) * 100, 100);
+        const pctG = Math.min((registrosDiarios.g / datosUsuario.macros.g) * 100, 100);
+
+        document.getElementById('barraP').style.width = pctP + '%';
+        document.getElementById('barraC').style.width = pctC + '%';
+        document.getElementById('barraG').style.width = pctG + '%';
+
+        // Dibujar historial de comidas en pantalla
+        const lista = document.getElementById('listaComidas');
+        lista.innerHTML = '';
+        registrosDiarios.comidas.forEach(function(item) {
+            lista.innerHTML += '<div class="item-comida"><span>' + item.desc + '</span><strong>' + item.cal + ' kcal</strong></div>';
+        });
+    }
+    function procesarComidaIA() {
+        const texto = document.getElementById('txtComidaIA').value.trim();
+        if (!texto) {
+            alert('Por favor, describe una comida o alimento.');
+            return;
+        }
+
+        // Simulación del análisis nutricional en local para evitar fallos de claves API
+        let calSim = 250;
+        let pSim = 15;
+        let cSim = 30;
+        let gSim = 8;
+
+        const tMinusculo = texto.toLowerCase();
+        if (tMinusculo.includes('huevo') || tMinusculo.includes('pollo') || tMinusculo.includes('carne')) {
+            calSim = 350; pSim = 30; cSim = 2; gSim = 12;
+        } else if (tMinusculo.includes('pan') || tMinusculo.includes('arroz') || tMinusculo.includes('pasta') || tMinusculo.includes('avena')) {
+            calSim = 280; pSim = 6; cSim = 55; gSim = 2;
+        } else if (tMinusculo.includes('ensalada') || tMinusculo.includes('manzana') || tMinusculo.includes('fruta')) {
+            calSim = 90; pSim = 1; cSim = 20; gSim = 0;
+        }
+
+        // Acumular los macronutrientes en los registros del día
+        registrosDiarios.calorias += calSim;
+        registrosDiarios.p += pSim;
+        registrosDiarios.c += cSim;
+        registrosDiarios.g += gSim;
+        
+        registrosDiarios.comidas.push({ desc: texto, cal: calSim });
+
+        localStorage.setItem('caloria_registros', JSON.stringify(registrosDiarios));
+        actualizarGraficos();
+        
+        // Limpiar el campo de texto
+        document.getElementById('txtComidaIA').value = '';
+    }
+
+    function borrarDatos() {
+        if (confirm('¿Seguro que quieres restablecer tu perfil y borrar los registros?')) {
+            localStorage.removeItem('caloria_perfil');
+            localStorage.removeItem('caloria_registros');
+            location.reload();
+        }
+    }
+</script>
+</body>
+</html>
