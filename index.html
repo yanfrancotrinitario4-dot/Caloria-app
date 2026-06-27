@@ -2,72 +2,87 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalorIA</title>
+    <title>CalorIA - Inteligente</title>
     <style>
-        body { background-color: #0d0d1a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .contenedor { background-color: #121226; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        h3 { text-align: center; color: #e91e63; margin-bottom: 20px; }
+        :root { --bg: #0d0d1a; --card: #121226; --pink: #e91e63; --green: #009688; }
+        body { background-color: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .contenedor { background-color: var(--card); padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; }
         .pestanas { display: flex; gap: 5px; margin-bottom: 15px; }
-        .pestana-btn { padding: 8px; font-size: 11px; flex: 1; background-color: #333; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        .pestana-active { background-color: #e91e63; }
-        textarea { width: 100%; padding: 10px; background-color: #1a1a3a; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 15px; }
+        .btn-p { padding: 8px; font-size: 11px; flex: 1; background: #333; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-p.active { background: var(--pink); }
+        textarea { width: 100%; padding: 10px; background: #1a1a3a; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 10px; }
         .acciones { display: flex; gap: 10px; }
-        button#btnRegistrar { flex: 2; padding: 12px; background-color: #e91e63; color: white; border: none; border-radius: 8px; font-weight: bold; }
-        label#btnCamara { flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
+        button#btnRegistrar { flex: 2; padding: 12px; background: var(--pink); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        label#btnCamaraGaleria { flex: 1; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
+        .item-comida { background: #1a1a3a; padding: 10px; margin-top: 10px; border-radius: 6px; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
-    <h3>¡Hola, !</h3>
-    
+    <h3>CalorIA</h3>
     <div class="pestanas">
-        <button class="pestana-btn pestana-active" onclick="seleccionarPestana(this, 'Desayuno')">Desayuno</button>
-        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Almuerzo')">Almuerzo</button>
-        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Cena')">Cena</button>
-        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Merienda')">Merienda</button>
+        <button class="btn-p active" onclick="setCat(this, 'Desayuno')">Desayuno</button>
+        <button class="btn-p" onclick="setCat(this, 'Almuerzo')">Almuerzo</button>
+        <button class="btn-p" onclick="setCat(this, 'Cena')">Cena</button>
+        <button class="btn-p" onclick="setCat(this, 'Merienda')">Merienda</button>
     </div>
 
-    <textarea id="txtComidaIA" rows="3" placeholder="Describe tu comida..."></textarea>
+    <textarea id="textoComida" rows="3" placeholder="Describe tu comida o sube una foto..."></textarea>
 
     <div class="acciones">
-        <button id="btnRegistrar" onclick="registrar()">Registrar</button>
-        <label id="btnCamara">📷
+        <button id="btnRegistrar" onclick="registrarTexto()">Registrar Texto</button>
+        <label id="btnCamaraGaleria">📷
+            <!-- accept="image/*" permite tanto cámara como galería -->
             <input type="file" accept="image/*" onchange="registrarFoto(event)" style="display: none;">
         </label>
     </div>
+
+    <div id="listaDiaria"></div>
 </div>
 
 <script>
     let categoria = 'Desayuno';
-    let historial = JSON.parse(localStorage.getItem('historial_comidas')) || {};
+    let db = JSON.parse(localStorage.getItem('caloria_db')) || {};
 
-    function seleccionarPestana(btn, cat) {
+    function setCat(btn, cat) {
         categoria = cat;
-        document.querySelectorAll('.pestana-btn').forEach(b => b.classList.remove('pestana-active'));
-        btn.classList.add('pestana-active');
+        document.querySelectorAll('.btn-p').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     }
 
-    function registrar() {
-        let fecha = new Date().toISOString().split('T')[0];
-        if (!historial[fecha]) historial[fecha] = [];
-        historial[fecha].push({ cat: categoria, desc: document.getElementById('txtComidaIA').value });
-        localStorage.setItem('historial_comidas', JSON.stringify(historial));
-        verificarResumen();
-        document.getElementById('txtComidaIA').value = '';
+    // Registrar por escrito
+    function registrarTexto() {
+        let desc = document.getElementById('textoComida').value;
+        guardarEnDB(desc + " (Calculado por texto)");
     }
 
+    // Registrar mediante cámara o galería
     function registrarFoto(e) {
-        if (e.target.files[0]) registrar();
+        if (e.target.files && e.target.files[0]) {
+            // Aquí es donde llamarías a la IA (Google Gemini API)
+            // Por ahora, simulamos el análisis de la IA:
+            let simulacionIA = "Comida detectada: Estimación IA -> 450 kcal";
+            guardarEnDB(simulacionIA);
+        }
     }
 
-    function verificarResumen() {
-        let f = new Date();
-        if (f.getDay() === 0) console.log("Resumen semanal generado");
-        if (f.getDate() >= 30) console.log("Resumen mensual generado");
+    function guardarEnDB(descripcion) {
+        let hoy = new Date().toISOString().split('T')[0];
+        if (!db[hoy]) db[hoy] = [];
+        db[hoy].push({ cat: categoria, desc: descripcion });
+        localStorage.setItem('caloria_db', JSON.stringify(db));
+        document.getElementById('textoComida').value = '';
+        render();
     }
+
+    function render() {
+        let hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('listaDiaria').innerHTML = (db[hoy] || []).map(i => 
+            `<div class="item-comida"><b>[${i.cat}]</b> ${i.desc}</div>`).join('');
+    }
+
+    render();
 </script>
-
 </body>
 </html>
