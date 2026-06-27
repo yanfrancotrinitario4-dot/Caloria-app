@@ -1,5 +1,4 @@
-    
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -53,7 +52,7 @@
             display: none !important;
         }
 
-        /* PANTALLA DE REGISTRO / ONBOARDING */
+        /* --- PANTALLA DE REGISTRO / ONBOARDING --- */
         .pantalla-onboarding {
             display: flex;
             flex-direction: column;
@@ -100,7 +99,7 @@
             background-color: var(--primario-hover);
         }
 
-        /* DASHBOARD PRINCIPAL */
+        /* --- DASHBOARD PRINCIPAL --- */
         .resumen-calorias {
             background-color: var(--bg-principal);
             border-radius: 12px;
@@ -135,7 +134,7 @@
             padding: 10px;
             border-radius: 8px;
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
             border: 1px solid var(--borde);
         }
 
@@ -143,7 +142,7 @@
             display: block;
             font-weight: bold;
             color: var(--primario);
-            font-size: 15px;
+            font-size: 16px;
             margin-top: 5px;
         }
 
@@ -202,26 +201,12 @@
             margin-bottom: 10px;
         }
 
-        .lista-comidas {
-            margin-bottom: 20px;
-            max-height: 160px;
-            overflow-y: auto;
-            border-radius: 8px;
-        }
-
         .item-comida {
-            background-color: var(--bg-principal);
+            display: flex;
+            justify-content: space-between;
             padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border-left: 4px solid var(--primario);
+            border-bottom: 1px solid var(--borde);
             font-size: 14px;
-        }
-
-        .item-comida p {
-            font-size: 12px;
-            color: var(--texto-secundario);
-            margin-top: 4px;
         }
     </style>
 </head>
@@ -229,6 +214,7 @@
 
 <div class="contenedor-app">
     
+    <!-- 1. PANTALLA DE BIENVENIDA (ONBOARDING) -->
     <div id="pantallaOnboarding" class="pantalla-onboarding">
         <h2>Bienvenido a CalorIA</h2>
         <p style="text-align: center; color: var(--texto-secundario); margin-bottom: 20px; font-size: 14px;">
@@ -237,7 +223,7 @@
         
         <div class="grupo-input">
             <label for="inputEdad">Edad (años)</label>
-            <input type="number" id="inputEdad" placeholder="Ej. 21" min="1">
+            <input type="number" id="inputEdad" placeholder="Ej. 21" min="1" max="120">
         </div>
 
         <div class="grupo-input">
@@ -261,23 +247,24 @@
         <div class="grupo-input">
             <label for="inputActividad">Nivel de Actividad</label>
             <select id="inputActividad">
-                <option value="1.2">Sedentario (Poco ejercicio)</option>
-                <option value="1.375">Ligero (1-3 días/semana)</option>
-                <option value="1.55">Moderado (3-5 días/semana)</option>
-                <option value="1.725">Fuerte (6-7 días/semana)</option>
+                <option value="1.2">Sedentario (Poco o nada de ejercicio)</option>
+                <option value="1.375">Ligero (Ejercicio 1-3 días/semana)</option>
+                <option value="1.55">Moderado (Ejercicio 3-5 días/semana)</option>
+                <option value="1.725">Fuerte (Ejercicio 6-7 días/semana)</option>
             </select>
         </div>
 
         <button onclick="guardarPerfil()">Calcular mis Metas</button>
     </div>
 
+    <!-- 2. DASHBOARD PRINCIPAL -->
     <div id="pantallaDashboard" class="oculto">
         <h3>CalorIA Dashboard</h3>
         
         <div class="metricas-salud">
             <div class="tarjeta-metrica">IMC <span id="txtIMC">0.0</span></div>
-            <div class="tarjeta-metrica">Gasto Basal <span id="txtTMB">0</span></div>
-            <div class="tarjeta-metrica">Meta Diaria <span id="txtMeta">0</span></div>
+            <div class="tarjeta-metrica">Gasto Basal <span id="txtTMB">0</span> kcal</div>
+            <div class="tarjeta-metrica">Meta Diaria <span id="txtMeta">0</span> kcal</div>
         </div>
 
         <div class="resumen-calorias">
@@ -286,27 +273,30 @@
             <div class="subtitulo-calorias">Consumidas: <span id="caloriasConsumidas">0</span> / <span id="caloriasTotales">0</span> kcal</div>
         </div>
 
+        <!-- Barras de Macronutrientes -->
         <div class="contenedor-macros">
             <div class="macro-linea">
-                <div class="macro-info"><span>Proteínas (P)</span><span id="txtProteina">0 / 0g</span></div>
+                <div class="macro-info"><span>Proteínas</span><span id="txtProteina">0 / 0g</span></div>
                 <div class="barra-progreso-bg"><div id="barraP" class="barra-progreso-fill p-fill"></div></div>
             </div>
             <div class="macro-linea">
-                <div class="macro-info"><span>Carbohidratos (C)</span><span id="txtCarbo">0 / 0g</span></div>
+                <div class="macro-info"><span>Carbohidratos</span><span id="txtCarbo">0 / 0g</span></div>
                 <div class="barra-progreso-bg"><div id="barraC" class="barra-progreso-fill c-fill"></div></div>
             </div>
             <div class="macro-linea">
-                <div class="macro-info"><span>Grasas (G)</span><span id="txtGrasa">0 / 0g</span></div>
+                <div class="macro-info"><span>Grasas</span><span id="txtGrasa">0 / 0g</span></div>
                 <div class="barra-progreso-bg"><div id="barraG" class="barra-progreso-fill g-fill"></div></div>
             </div>
         </div>
 
-        <div id="listaComidas" class="lista-comidas"></div>
+        <!-- Listado de Comidas -->
+        <div id="listaComidas" style="margin-bottom: 20px; max-height: 150px; overflow-y: auto;"></div>
 
+        <!-- 3. INTERFAZ DE REGISTRO CON IA -->
         <div class="seccion-registro">
-            <textarea class="textarea-ia" id="txtComidaIA" placeholder="Describe lo que comiste (Ej: 200g de pollo asado con una taza de arroz y aguacate)..."></textarea>
+            <textarea class="textarea-ia" id="txtComidaIA" placeholder="Describe lo que comiste (Ej: Un tazón de avena con un plátano y 30g de proteína de suero)..."></textarea>
             <button onclick="procesarComidaIA()">Registrar con IA</button>
-            <button onclick="borrarDatos()" style="background-color: #444; font-size: 11px; padding: 6px; margin-top: 15px;">Restablecer Aplicación</button>
+            <button onclick="borrarDatos()" style="background-color: #555; font-size: 12px; padding: 5px; margin-top: 15px;">Restablecer Perfil</button>
         </div>
     </div>
 </div>
@@ -324,4 +314,5 @@
     function guardarPerfil() {
         const edad = parseInt(document.getElementById('inputEdad').value);
         const sexo = document.getElementById('inputSexo').value;
-        const peso = parseFloat(document.getElementById('input
+        const peso = parseFloat(document.getElementById('inputPeso').value);
+Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
