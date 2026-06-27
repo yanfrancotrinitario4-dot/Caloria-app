@@ -3,70 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalorIA - Control de Peso Inteligente</title>
+    <title>CalorIA</title>
     <style>
-        :root { --bg-principal: #0d0d1a; --bg-tarjeta: #121226; --texto: #ffffff; --texto-secundario: #aaa; --primario: #e91e63; --borde: #2d2d5a; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-principal); color: var(--texto); padding: 20px; display: flex; justify-content: center; }
-        .contenedor-app { width: 100%; max-width: 400px; background-color: var(--bg-tarjeta); border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-        h3 { text-align: center; color: var(--primario); margin-top: 0; }
-        .oculto { display: none !important; }
-        .grupo-entrada { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: var(--texto-secundario); }
-        input, textarea, select { width: 100%; padding: 10px; background-color: #1a1a3a; border: 1px solid #333; border-radius: 8px; color: white; }
-        button { width: 100%; padding: 12px; background-color: var(--primario); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .pestanas { display: flex; gap: 5px; margin-bottom: 10px; }
+        body { background-color: #0d0d1a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
+        .contenedor { background-color: #121226; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h3 { text-align: center; color: #e91e63; margin-bottom: 20px; }
+        .pestanas { display: flex; gap: 5px; margin-bottom: 15px; }
         .pestana-btn { padding: 8px; font-size: 11px; flex: 1; background-color: #333; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        .pestana-active { background-color: var(--primario); }
-        .item-comida { background-color: #1a1a3a; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 13px; }
+        .pestana-active { background-color: #e91e63; }
+        textarea { width: 100%; padding: 10px; background-color: #1a1a3a; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 15px; }
+        .acciones { display: flex; gap: 10px; }
+        button#btnRegistrar { flex: 2; padding: 12px; background-color: #e91e63; color: white; border: none; border-radius: 8px; font-weight: bold; }
+        label#btnCamara { flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
-<div class="contenedor-app">
-    <!-- PANTALLA 1: PERFIL -->
-    <div id="pantallaPerfil">
-        <h3>Configuración de Perfil</h3>
-        <div class="grupo-entrada"><label>Nombre:</label><input type="text" id="perfilNombre"></div>
-        <button onclick="guardarPerfil()">Guardar y Comenzar</button>
+
+<div class="contenedor">
+    <h3>¡Hola, !</h3>
+    
+    <div class="pestanas">
+        <button class="pestana-btn pestana-active" onclick="seleccionarPestana(this, 'Desayuno')">Desayuno</button>
+        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Almuerzo')">Almuerzo</button>
+        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Cena')">Cena</button>
+        <button class="pestana-btn" onclick="seleccionarPestana(this, 'Merienda')">Merienda</button>
     </div>
 
-    <!-- PANTALLA 2: DASHBOARD -->
-    <div id="pantallaDashboard" class="oculto">
-        <h3 id="saludoUsuario"></h3>
-        <div id="resumenReporte" style="text-align:center; font-size:12px; color:#00bcd4; margin-bottom:10px;"></div>
-        
-        <div class="pestanas">
-            <button class="pestana-btn pestana-active" onclick="seleccionarPestana(this, 'Desayuno')">Desayuno</button>
-            <button class="pestana-btn" onclick="seleccionarPestana(this, 'Almuerzo')">Almuerzo</button>
-            <button class="pestana-btn" onclick="seleccionarPestana(this, 'Cena')">Cena</button>
-            <button class="pestana-btn" onclick="seleccionarPestana(this, 'Merienda')">Merienda</button>
-        </div>
+    <textarea id="txtComidaIA" rows="3" placeholder="Describe tu comida..."></textarea>
 
-        <textarea id="txtComidaIA" rows="2" placeholder="Describe tu comida..."></textarea>
-        <div style="display: flex; gap: 10px; margin-top: 8px;">
-            <button onclick="procesarComidaIA()" style="flex: 2; margin-top: 0;">Registrar</button>
-            <label style="flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                📷<input type="file" accept="image/*" onchange="procesarFotoIA(event)" style="display: none;">
-            </label>
-        </div>
-        <div id="listaComidasHoy" style="margin-top:20px;"></div>
+    <div class="acciones">
+        <button id="btnRegistrar" onclick="registrar()">Registrar</button>
+        <label id="btnCamara">📷
+            <input type="file" accept="image/*" onchange="registrarFoto(event)" style="display: none;">
+        </label>
     </div>
 </div>
 
 <script>
-    let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
-    let historial = JSON.parse(localStorage.getItem('caloria_historial')) || {};
     let categoria = 'Desayuno';
-
-    window.onload = () => { if (datosUsuario) mostrarDashboard(); };
-
-    function getFecha() { return new Date().toISOString().split('T')[0]; }
-
-    function guardarPerfil() {
-        datosUsuario = { nombre: document.getElementById('perfilNombre').value };
-        localStorage.setItem('caloria_perfil', JSON.stringify(datosUsuario));
-        mostrarDashboard();
-    }
+    let historial = JSON.parse(localStorage.getItem('historial_comidas')) || {};
 
     function seleccionarPestana(btn, cat) {
         categoria = cat;
@@ -74,43 +49,25 @@
         btn.classList.add('pestana-active');
     }
 
-    function guardarEnHistorial(desc, cal) {
-        let fecha = getFecha();
+    function registrar() {
+        let fecha = new Date().toISOString().split('T')[0];
         if (!historial[fecha]) historial[fecha] = [];
-        historial[fecha].push({ cat: categoria, desc, cal });
-        localStorage.setItem('caloria_historial', JSON.stringify(historial));
-        verificarResumenes();
-        actualizarDashboard();
-    }
-
-    function verificarResumenes() {
-        let f = new Date();
-        let display = document.getElementById('resumenReporte');
-        if (f.getDay() === 0) display.innerText = "Resumen semanal listo.";
-        else if (f.getDate() === 30 || f.getDate() === 31) display.innerText = "Resumen mensual listo.";
-    }
-
-    function mostrarDashboard() {
-        document.getElementById('pantallaPerfil').classList.add('oculto');
-        document.getElementById('pantallaDashboard').classList.remove('oculto');
-        document.getElementById('saludoUsuario').innerText = "¡Hola, " + datosUsuario.nombre + "!";
-        actualizarDashboard();
-    }
-
-    function actualizarDashboard() {
-        let hoy = historial[getFecha()] || [];
-        const lista = document.getElementById('listaComidasHoy');
-        lista.innerHTML = hoy.map(c => `<div class="item-comida"><span>[${c.cat}] ${c.desc}</span><strong>${c.cal} kcal</strong></div>`).join('');
-    }
-
-    function procesarComidaIA() {
-        guardarEnHistorial(document.getElementById('txtComidaIA').value, 300);
+        historial[fecha].push({ cat: categoria, desc: document.getElementById('txtComidaIA').value });
+        localStorage.setItem('historial_comidas', JSON.stringify(historial));
+        verificarResumen();
         document.getElementById('txtComidaIA').value = '';
     }
 
-    function procesarFotoIA(e) {
-        if (e.target.files[0]) guardarEnHistorial("Foto analizada", 450);
+    function registrarFoto(e) {
+        if (e.target.files[0]) registrar();
+    }
+
+    function verificarResumen() {
+        let f = new Date();
+        if (f.getDay() === 0) console.log("Resumen semanal generado");
+        if (f.getDate() >= 30) console.log("Resumen mensual generado");
     }
 </script>
+
 </body>
 </html>
