@@ -3,363 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalorIA App</title>
+    <title>CalorIA - Control Inteligente</title>
     <style>
-        body {
-            background-color: #0d0d1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .contenedor-app {
-            width: 100%;
-            max-width: 400px;
-            background-color: #121226;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-        h3, h4 {
-            text-align: center;
-            color: #e91e63;
-            margin-top: 0;
-        }
+        :root { --bg-principal: #121212; --bg-tarjeta: #1e1e1e; --texto: #ffffff; --texto-secundario: #aaaaaa; --primario: #009688; --borde: #333333; }
+        body { background-color: var(--bg-principal); color: var(--texto); padding: 15px; display: flex; justify-content: center; font-family: sans-serif; }
+        .contenedor-app { width: 100%; max-width: 480px; background-color: var(--bg-tarjeta); border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-height: 90vh; }
         .oculto { display: none !important; }
-        .grupo-entrada { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: #bbb; }
-        input, textarea {
-            width: 100%; padding: 10px; background-color: #1a1a3a;
-            border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box;
-        }
-        button {
-            width: 100%; padding: 12px; background-color: #e91e63; color: white;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
-        .metricas-salud { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tarjeta-metrica {
-            flex: 1; background-color: #1a1a3a; padding: 10px;
-            border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid #2d2d5a;
-        }
-        .tarjeta-metrica span { display: block; font-size: 16px; font-weight: bold; color: #00bcd4; margin-top: 5px; }
-        .resumen-calorias {
-            text-align: center; margin-bottom: 20px; background-color: #1a1a3a;
-            padding: 15px; border-radius: 12px; border: 1px solid #2d2d5a;
-        }
-        .numero-calorias { font-size: 36px; font-weight: bold; color: #e91e63; margin: 5px 0; }
-        .subtitulo-calorias { font-size: 12px; color: #aaa; }
-        .macro-linea { margin-bottom: 12px; }
-        .macro-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-        .barra-progreso-bg { background-color: #222; border-radius: 6px; height: 8px; width: 100%; overflow: hidden; }
-        .barra-progreso-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
-        .p-fill { background-color: #e91e63; }
-        .c-fill { background-color: #00bcd4; }
-        .g-fill { background-color: #ff9800; }
-        .item-comida {
-            background-color: #1a1a3a; padding: 8px 12px; border-radius: 6px;
-            margin-bottom: 6px; display: flex; justify-content: space-between; font-size: 13px;
-        }
-        .tarjeta-reporte {
-            background: #1a1a3a; border: 1px solid #2d2d5a; padding: 15px; border-radius: 10px; margin-bottom: 15px;
-        }
+        .grupo-input { margin-bottom: 15px; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--borde); background-color: var(--bg-principal); color: var(--texto); }
+        button { width: 100%; padding: 12px; background-color: var(--primario); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .resumen-calorias { text-align: center; margin: 20px 0; }
+        .numero-calorias { font-size: 36px; color: var(--primario); font-weight: bold; }
+        .barra-progreso-bg { background-color: #333; height: 8px; border-radius: 4px; margin: 5px 0 15px; }
+        .barra-progreso-fill { height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 4px; }
+        .p-fill { background-color: #ff5722; } .c-fill { background-color: #4caf50; } .g-fill { background-color: #ffeb3b; }
+        .item-comida { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--borde); font-size: 14px; }
     </style>
 </head>
 <body>
+
 <div class="contenedor-app">
-   <!-- PANTALLA 1: PERFIL -->
-    <div id="pantallaPerfil">
-        <h3>Configuración de Perfil</h3>
-        <div class="grupo-entrada"><label>Nombre:</label><input type="text" id="perfilNombre" placeholder="Tu nombre"></div>
-        <div class="grupo-entrada"><label>Edad:</label><input type="number" id="perfilEdad" placeholder="Ej: 21"></div>
-        <div class="grupo-entrada"><label>Altura (cm):</label><input type="number" id="perfilAltura" placeholder="Ej: 175"></div>
-        <div class="grupo-entrada"><label>Peso (kg):</label><input type="number" id="perfilPeso" placeholder="Ej: 107"></div>
-        <div class="grupo-entrada"><label>Meta Calórica Diaria:</label><input type="number" id="perfilMeta" placeholder="Ej: 2000"></div>
-        <button onclick="guardarPerfil()">Guardar y Comenzar</button>
+    <div id="pantallaOnboarding">
+        <h2>Configuración CalorIA</h2>
+        <div class="grupo-input"><label>Edad</label><input type="number" id="inputEdad" placeholder="21"></div>
+        <div class="grupo-input"><label>Sexo</label><select id="inputSexo"><option value="masculino">Masculino</option><option value="femenino">Femenino</option></select></div>
+        <div class="grupo-input"><label>Peso (kg)</label><input type="number" id="inputPeso" step="0.1" placeholder="107"></div>
+        <div class="grupo-input"><label>Estatura (metros)</label><input type="number" id="inputAltura" step="0.01" placeholder="1.75"></div>
+        <div class="grupo-input"><label>Actividad</label><select id="inputActividad"><option value="1.2">Sedentario</option><option value="1.375">Ligero</option><option value="1.55">Moderado</option><option value="1.725">Fuerte</option></select></div>
+        <button onclick="guardarPerfil()">Iniciar CalorIA</button>
     </div>
 
-    <!-- PANTALLA 2: DASHBOARD -->
     <div id="pantallaDashboard" class="oculto">
-        <h3 id="saludoUsuario">¡Hola!</h3>
-        <div class="metricas-salud">
-            <div class="tarjeta-metrica">IMC<span id="valIMC">--.-</span></div>
-            <div class="tarjeta-metrica">Gasto Est.<span id="valGasto">----</span></div>
-            <div class="tarjeta-metrica">Meta<span id="valMeta">----</span></div>
-        </div>
+        <h3>Dashboard Diario</h3>
         <div class="resumen-calorias">
-            <div class="subtitulo-calorias">CONSUMIDO HOY</div>
-            <div class="numero-calorias" id="calTotales">0</div>
-            <div class="subtitulo-calorias" id="txtProgresoPorcentaje">0% de tu meta</div>
+            <div id="caloriasRestantes" class="numero-calorias">0</div>
+            <div style="font-size: 12px; color: var(--texto-secundario);">kcal restantes de tu Gasto Energético Total</div>
         </div>
-        <div class="macro-linea">
-            <div class="macro-info"><span>Proteína</span><span id="txtP">0g</span></div>
-            <div class="barra-progreso-bg"><div id="barP" class="barra-progreso-fill p-fill"></div></div>
+        <div id="contenedorMacros">
+            <div class="macro-linea">Proteínas <span id="txtProteina">0/0g</span><div class="barra-progreso-bg"><div id="barraP" class="barra-progreso-fill p-fill"></div></div></div>
+            <div class="macro-linea">Carbohidratos <span id="txtCarbo">0/0g</span><div class="barra-progreso-bg"><div id="barraC" class="barra-progreso-fill c-fill"></div></div></div>
+            <div class="macro-linea">Grasas <span id="txtGrasa">0/0g</span><div class="barra-progreso-bg"><div id="barraG" class="barra-progreso-fill g-fill"></div></div></div>
         </div>
-        <div class="macro-linea">
-            <div class="macro-info"><span>Carbos</span><span id="txtC">0g</span></div>
-            <div class="barra-progreso-bg"><div id="barC" class="barra-progreso-fill c-fill"></div></div>
-        </div>
-        <div class="macro-linea">
-            <div class="macro-info"><span>Grasas</span><span id="txtG">0g</span></div>
-            <div class="barra-progreso-bg"><div id="barG" class="barra-progreso-fill g-fill"></div></div>
-        </div>
-
-        <div class="seccion-registro" style="margin-top: 25px;">
-            <div style="display: flex; gap: 5px; margin-bottom: 12px;" id="pestanasComida">
-                <button onclick="cambiarPestanaManual('DESAYUNO', this)" style="margin:0; background-color:#009688; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Desayuno</button>
-                <button onclick="cambiarPestanaManual('ALMUERZO', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Almuerzo</button>
-                <button onclick="cambiarPestanaManual('CENA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Cena</button>
-                <button onclick="cambiarPestanaManual('MERIENDA', this)" style="margin:0; background-color:#555; font-size:11px; padding:8px 4px; flex:1; font-weight:bold;">Merienda</button>
-            </div>
-            <textarea class="textarea-ia" id="txtComidaIA" rows="2" placeholder="Describe tu desayuno..."></textarea>
-            <div style="display: flex; gap: 10px; margin-top: 8px;">
-                <button onclick="procesarComidaIA()" style="flex: 2; margin-top: 0;">Registrar Texto</button>
-                <label style="flex: 1; background-color: #009688; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 0;">
-                    📷
-                    <input type="file" accept="image/*" capture="environment" onchange="procesarFotoIA(event)" style="display: none;">
-                </label>
-            </div>
-        </div>
-        <h4 style="margin-top:20px; border-bottom:1px solid #2d2d5a; padding-bottom:5px; text-align:left;">Comidas de Hoy</h4>
-        <div id="listaComidasHoy"></div>
+        <div id="listaComidas" style="margin-top: 15px;"></div>
+        <textarea id="txtComidaIA" style="width: 100%; height: 60px; margin-top: 15px; background: #000; color: #fff; border: 1px solid var(--borde); padding: 10px;" placeholder="Ej: Dos huevos y una taza de arroz..."></textarea>
+        <button onclick="procesarComidaIA()">Registrar con IA</button>
     </div>
-
-    <!-- PANTALLA 3: REPORTES -->
-    <div id="pantallaReportes" class="oculto">
-        <h3>Historial de Reportes</h3>
-        <div id="zonaReporteDomingo"></div>
-        <div id="zonaReporteMensual"></div>
-        <h4 style="border-bottom: 1px solid #2d2d5a; padding-bottom: 5px; color: #00bcd4; text-align:left; margin-top:20px;">Cierres Mensuales Guardados</h4>
-        <div id="listaReportesMensuales"></div>
-    </div>
-
-    <!-- MENÚ GLOBAL INFERIOR -->
-    <div id="navegacionApp" class="oculto" style="display: flex; justify-content: space-around; margin-top: 30px; background-color: #1a1a3a; padding: 10px; border-radius: 8px; border: 1px solid #2d2d5a;">
-        <button onclick="irAPantalla('dashboard')" id="navDash" style="margin: 0; background-color: #009688; flex: 1; font-size: 13px;">🏠 Diarios</button>
-        <button onclick="irAPantalla('reportes')" id="navRep" style="margin: 0; background-color: #333; flex: 1; font-size: 13px; margin-left: 10px;">📊 Reportes</button>
-    </div>
-    <button id="btnResetGrave" class="oculto" onclick="borrarDatos()" style="background-color: #333; font-size: 11px; padding: 6px; margin-top: 20px; width: auto; display: block; margin-left: auto; margin-right: auto;">Restablecer Todo</button>
 </div>
+
 <script>
-   let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil')) || null;
-    const obtenerFechaHoy = () => new Date().toLocaleDateString('sv-SE'); // Formato AAAA-MM-DD local
-    const hoy = obtenerFechaHoy();
+    const hoy = new Date().toISOString().split('T')[0];
+    let datosUsuario = JSON.parse(localStorage.getItem('caloria_perfil'));
+    let registros = JSON.parse(localStorage.getItem('caloria_registros')) || { fecha: hoy, calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
 
-    let historialSemanas = JSON.parse(localStorage.getItem('caloria_historial')) || {};
-    let cierresMensuales = JSON.parse(localStorage.getItem('caloria_mensuales')) || [];
-    
-    if (!historialSemanas[hoy]) {
-        historialSemanas[hoy] = { calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
-    }
-    let registrosDiarios = historialSemanas[hoy];
-    let seleccionManualUsuario = 'DESAYUNO';
-
-    window.onload = function() {
-        if (datosUsuario) {
-            mostrarDashboard();
-            verificarCierresDisponibles();
-        }
-    };
+    if (registros.fecha !== hoy) registros = { fecha: hoy, calorias: 0, p: 0, c: 0, g: 0, comidas: [] };
 
     function guardarPerfil() {
-        const nombre = document.getElementById('perfilNombre').value.trim();
-        const edad = parseInt(document.getElementById('perfilEdad').value);
-        const altura = parseInt(document.getElementById('perfilAltura').value);
-        const peso = parseFloat(document.getElementById('perfilPeso').value);
-        const meta = parseInt(document.getElementById('perfilMeta').value);
-
-        if (!nombre || !edad || !altura || !peso || !meta) {
-            alert('Por favor completa todos los campos.');
-            return;
-        }
-
-        let imc = (peso / ((altura / 100) ** 2)).toFixed(1);
-        let gastoEst = Math.round(10 * peso + 6.25 * altura - 5 * edad + 5);
-
-        datosUsuario = { nombre, edad, altura, peso, meta, imc, gastoEst };
+        const ed = parseInt(document.getElementById('inputEdad').value), sx = document.getElementById('inputSexo').value, pe = parseFloat(document.getElementById('inputPeso').value), al = parseFloat(document.getElementById('inputAltura').value), ac = parseFloat(document.getElementById('inputActividad').value);
+        const tmb = (sx === 'masculino') ? (88.362 + (13.397 * pe) + (4.799 * (al * 100)) - (5.677 * ed)) : (447.593 + (9.247 * pe) + (3.098 * (al * 100)) - (4.330 * ed));
+        const getd = Math.round(tmb * ac);
+        datosUsuario = { getd, macros: { p: Math.round((getd * 0.3) / 4), c: Math.round((getd * 0.4) / 4), g: Math.round((getd * 0.3) / 9) } };
         localStorage.setItem('caloria_perfil', JSON.stringify(datosUsuario));
-        mostrarDashboard();
-        verificarCierresDisponibles();
+        location.reload();
     }
 
-    function mostrarDashboard() {
-        document.getElementById('pantallaPerfil').classList.add('oculto');
-        document.getElementById('pantallaDashboard').classList.remove('oculto');
-        document.getElementById('navegacionApp').classList.remove('oculto');
-        document.getElementById('btnResetGrave').classList.remove('oculto');
+    function procesarComidaIA() {
+        const input = document.getElementById('txtComidaIA');
+        const desc = input.value.trim();
+        if (!desc) return;
+
+        // "IA" Lógica de análisis de patrones
+        let cal = 200, p = 10, c = 20, g = 5;
+        const txt = desc.toLowerCase();
+        if (txt.includes('huevo') || txt.includes('pollo') || txt.includes('carne')) { cal = 300; p = 30; c = 0; g = 10; }
+        else if (txt.includes('arroz') || txt.includes('pan') || txt.includes('avena')) { cal = 250; p = 5; c = 50; g = 1; }
+
+        registros.calorias += cal; registros.p += p; registros.c += c; registros.g += g;
+        registros.comidas.push({ desc, cal });
+        localStorage.setItem('caloria_registros', JSON.stringify(registros));
+        input.value = '';
+        actualizarUI();
+    }
+
+    function actualizarUI() {
+        document.getElementById('caloriasRestantes').innerText = Math.max(0, datosUsuario.getd - registros.calorias);
+        document.getElementById('txtProteina').innerText = `${registros.p}/${datosUsuario.macros.p}g`;
+        document.getElementById('txtCarbo').innerText = `${registros.c}/${datosUsuario.macros.c}g`;
+        document.getElementById('txtGrasa').innerText = `${registros.g}/${datosUsuario.macros.g}g`;
         
-        document.getElementById('saludoUsuario').innerText = "¡Hola, " + datosUsuario.nombre + "!";
-        document.getElementById('valIMC').innerText = datosUsuario.imc;
-        document.getElementById('valGasto').innerText = datosUsuario.gastoEst;
-        document.getElementById('valMeta').innerText = datosUsuario.meta;
-        actualizarGraficos();
-    }
+        document.getElementById('barraP').style.width = Math.min((registros.p / datosUsuario.macros.p) * 100, 100) + '%';
+        document.getElementById('barraC').style.width = Math.min((registros.c / datosUsuario.macros.c) * 100, 100) + '%';
+        document.getElementById('barraG').style.width = Math.min((registros.g / datosUsuario.macros.g) * 100, 100) + '%';
 
-    function irAPantalla(pantalla) {
-        if (pantalla === 'dashboard') {
-            document.getElementById('pantallaDashboard').classList.remove('oculto');
-            document.getElementById('pantallaReportes').classList.add('oculto');
-            document.getElementById('navDash').style.backgroundColor = '#009688';
-            document.getElementById('navRep').style.backgroundColor = '#333';
-        } else {
-            document.getElementById('pantallaDashboard').classList.add('oculto');
-            document.getElementById('pantallaReportes').classList.remove('remove', 'oculto');
-            document.getElementById('navDash').style.backgroundColor = '#333';
-            document.getElementById('navRep').style.backgroundColor = '#009688';
-            renderizarListaMensual();
-        }
-    }
-
-    function cambiarPestanaManual(categoria, boton) {
-        seleccionManualUsuario = categoria;
-        const botones = document.querySelectorAll('#pestanasComida button');
-        botones.forEach(btn => btn.style.backgroundColor = '#555');
-        boton.style.backgroundColor = '#009688';
-        document.getElementById('txtComidaIA').placeholder = "Describe tu " + categoria.toLowerCase() + "...";
-    }
-   function procesarComidaIA() {
-        const texto = document.getElementById('txtComidaIA').value.trim();
-        if (!texto) return;
-
-        let calSim = 320; let pSim = 20; let cSim = 40; let gSim = 10;
-        
-        registrosDiarios.calorias += calSim;
-        registrosDiarios.p += pSim;
-        registrosDiarios.c += cSim;
-        registrosDiarios.g += gSim;
-        
-        registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] " + texto, cal: calSim });
-        localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
-        
-        actualizarGraficos();
-        document.getElementById('txtComidaIA').value = '';
-    }
-
-    function procesarFotoIA(event) {
-        if (!event.target.files[0]) return;
-        document.getElementById('txtComidaIA').value = "Analizando foto... 📷✨";
-        
-        setTimeout(() => {
-            let calSim = 450; let pSim = 30; let carboSim = 50; let gSim = 12;
-            
-            registrosDiarios.calorias += calSim;
-            registrosDiarios.p += pSim;
-            registrosDiarios.c += carboSim; // Usa carboSim aquí
-            registrosDiarios.g += gSim;
-
-            
-            registrosDiarios.comidas.push({ desc: "[" + seleccionManualUsuario + "] Foto de plato analizada", cal: calSim });
-            localStorage.setItem('caloria_historial', JSON.stringify(historialSemanas));
-            
-            actualizarGraficos();
-            document.getElementById('txtComidaIA').value = '';
-        }, 1200);
-    }
-
-    function actualizarGraficos() {
-        document.getElementById('calTotales').innerText = registrosDiarios.calorias;
-        let pct = Math.min(Math.round((registrosDiarios.calorias / datosUsuario.meta) * 100), 100);
-        document.getElementById('txtProgresoPorcentaje').innerText = pct + "% de tu meta";
-
-        document.getElementById('txtP').innerText = registrosDiarios.p + "g";
-        document.getElementById('txtC').innerText = registrosDiarios.c + "g";
-        document.getElementById('txtG').innerText = registrosDiarios.g + "g";
-
-        document.getElementById('barP').style.width = Math.min((registrosDiarios.p / 150) * 100, 100) + "%";
-        document.getElementById('barC').style.width = Math.min((registrosDiarios.c / 200) * 100, 100) + "%";
-        document.getElementById('barG').style.width = Math.min((registrosDiarios.g / 70) * 100, 100) + "%";
-
-        const lista = document.getElementById('listaComidasHoy');
+        const lista = document.getElementById('listaComidas');
         lista.innerHTML = '';
-        registrosDiarios.comidas.forEach(c => {
-            lista.innerHTML += `<div class="item-comida"><span>${c.desc}</span><strong>${c.cal} kcal</strong></div>`;
+        registros.comidas.forEach(i => {
+            const div = document.createElement('div'); div.className = 'item-comida';
+            div.innerHTML = `<span>${i.desc}</span><strong>${i.cal} kcal</strong>`;
+            lista.appendChild(div);
         });
     }
 
-    function verificarCierresDisponibles() {
-        const d = new Date();
-        
-        // Control Domingo
-        if (d.getDay() === 0) {
-            document.getElementById('zonaReporteDomingo').innerHTML = `
-                <button onclick="ejecutarReporteDomingo()" style="background-color:#e91e63;">📊 Generar Resumen Dominical</button>
-            `;
-        }
-        
-        // Control fin de mes automático (Si mañana es día 1, hoy es último de mes)
-        const mañana = new Date(); mañana.setDate(d.getDate() + 1);
-        if (mañana.getDate() === 1) {
-            document.getElementById('zonaReporteMensual').innerHTML = `
-                <button onclick="ejecutarCierreMensual()" style="background-color:#00bcd4; margin-top:10px;">🏆 Guardar y Cerrar Mes Actual</button>
-            `;
-        }
-    }
-
-    function ejecutarReporteDomingo() {
-        let suma = 0; let conteo = 0;
-        for (let i = 6; i >= 0; i--) {
-            let tmp = new Date(); tmp.setDate(tmp.getDate() - i);
-            let iso = tmp.toLocaleDateString('sv-SE');
-            if (historialSemanas[iso]) { suma += historialSemanas[iso].calorias; conteo++; }
-        }
-        alert("📊 RESUMEN SEMANAL\n\nPromedio diario de los últimos 7 días: " + Math.round(suma / (conteo || 1)) + " kcal.");
-    }
-
-    function ejecutarCierreMensual() {
-        const d = new Date();
-        const opciones = { month: 'long', year: 'numeric' };
-        const nombreMes = d.toLocaleDateString('es-ES', opciones).toUpperCase();
-
-        if (cierresMensuales.some(m => m.mes === nombreMes)) {
-            alert("El mes de " + nombreMes + " ya fue cerrado previamente.");
-            return;
-        }
-
-        let totalCal = 0; let dias = 0;
-        const mesActual = d.getMonth();
-        const añoActual = d.getFullYear();
-
-        Object.keys(historialSemanas).forEach(fecha => {
-            let parts = fecha.split('-');
-            if (parseInt(parts[0]) === añoActual && (parseInt(parts[1]) - 1) === mesActual) {
-                totalCal += historialSemanas[fecha].calorias;
-                dias++;
-            }
-        });
-
-        let promedio = Math.round(totalCal / (dias || 1));
-        cierresMensuales.push({ mes: nombreMes, promedio: promedio, dias: dias });
-        localStorage.setItem('caloria_mensuales', JSON.stringify(cierresMensuales));
-        
-        alert("¡Mes cerrado con éxito! Guarda el reporte en la pestaña de historial.");
-        renderizarListaMensual();
-    }
-
-    function renderizarListaMensual() {
-        const contenedor = document.getElementById('listaReportesMensuales');
-        if (cierresMensuales.length === 0) {
-            contenedor.innerHTML = '<p style="color:#aaa; font-size:13px; text-align:center;">Aún no hay meses cerrados.</p>';
-            return;
-        }
-        contenedor.innerHTML = '';
-        cierresMensuales.forEach(m => {
-            contenedor.innerHTML += `
-                <div class="tarjeta-reporte">
-                    <strong style="color:#00bcd4; display:block; margin-bottom:5px;">${m.mes}</strong>
-                    <span style="font-size:13px; color:#eee;">Promedio Calórico: ${m.promedio} kcal/día</span><br>
-                    <span style="font-size:11px; color:#aaa;">Días con Registro: ${m.dias}</span>
-                </div>
-            `;
-        });
-    }
-
-    function borrarDatos() {
-        if (confirm("¿Estás seguro de que deseas reiniciar toda la aplicación? Se perderán los perfiles e historiales.")) {
-            localStorage.clear();
-            location.reload();
-        }
+    if (datosUsuario) {
+        document.getElementById('pantallaOnboarding').classList.add('oculto');
+        document.getElementById('pantallaDashboard').classList.remove('oculto');
+        actualizarUI();
     }
 </script>
 </body>
